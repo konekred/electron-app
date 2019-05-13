@@ -1,37 +1,12 @@
 const electron = require('electron')
-const fs = require('fs')
-const url = require('url')
-const path = require('path')
-
 const { app, BrowserWindow, Menu } = electron
 
 let mainWindow = null
-let newWindow = null
 
 const mainMenuTemplate = [
   {
     label: 'File',
     submenu: [
-      {
-        label: 'New Window',
-        click() {
-          newWindow = new BrowserWindow({
-            width: 200,
-            height: 200,
-            title: 'New Window'
-          })
-
-          newWindow.loadURL(url.format({
-            pathname: path.resolve('public/index.html'),
-            protocol: 'file',
-            slashes: true
-          }))
-
-          newWindow.on('close', () => {
-            newWindow = null
-          })
-        }
-      },
       {
         label: 'Refresh',
         role: 'reload'
@@ -41,20 +16,6 @@ const mainMenuTemplate = [
         accelerator: process.platform == 'darwin' ? 'Command+Q' : 'Ctrl+Q',
         click() {
           app.quit()
-        }
-      },
-      {
-        label: 'Print',
-        click() {
-
-
-          mainWindow.webContents.printToPDF({}, (error, data) => {
-            if (error) throw error
-            fs.writeFile('./print.pdf', data, (error) => {
-              if (error) throw error
-              console.log('Write PDF successfully.')
-            })
-          })
         }
       }
     ]
