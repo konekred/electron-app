@@ -1,0 +1,57 @@
+{
+  "env": {
+    "node": true,
+    "browser": true,
+    "es6": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:flowtype/recommended"
+  ],
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "react"
+  ],
+  "settings": {
+    "react": {
+      "createClass": "createReactClass",
+      "pragma": "React",
+      "version": "detect",
+      "flow": "detect"
+    }
+  },
+  "rules": {
+    "quotes": ["error", "single"],
+    "indent": ["error", 2],
+    "no-var": "error",
+    "no-console": "warn",
+    "no-alert": "warn",
+    "no-empty": "error",
+    "no-cond-assign": "error",
+    "no-empty-function": "error",
+    "no-multi-spaces": "error",
+    "keyword-spacing": "error",
+    "no-trailing-spaces": "error",
+    "eol-last": ["error", "always"],
+    "comma-dangle": ["error", "never"],
+    "comma-spacing": ["error", { "before": false, "after": true }],
+    "prefer-const": ["error", { "destructuring": "any", "ignoreReadBeforeAssign": false }],
+    "no-use-before-define": ["error", { "functions": true, "classes": true }],
+    "camelcase": [2, { "properties": "never" }],
+    "object-curly-spacing": ["error", "always"],
+    "flowtype/no-types-missing-file-annotation": 0,
+    "jsx-quotes": ["error", "prefer-double"],
+    "react/jsx-curly-spacing": [2, { "when": "never", "spacing": { "objectLiterals": "never" }}]
+  }
+}
