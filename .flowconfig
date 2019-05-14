@@ -4,6 +4,7 @@
 .*/public/*
 .*/webpack/*
 .*/main.js
+.*/test.js
 
 [include]
 
