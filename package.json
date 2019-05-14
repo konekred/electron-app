@@ -5,6 +5,7 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
+    "server": "nodemon ./server/app.js",
     "dev": "webpack-dev-server --config ./webpack/webpack.dev.config.js --mode development",
     "build": "cross-env NODE_ENV=production webpack --config ./webpack/webpack.prod.config.js --mode production",
     "lint": "eslint ./src",
@@ -58,9 +59,7 @@
     "webpack-dev-server": "^3.3.1"
   },
   "dependencies": {
-    "cors": "^2.8.5",
-    "ejs": "^2.6.1",
-    "express": "^4.16.4",
+    "moment": "^2.24.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   }

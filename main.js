@@ -1,3 +1,5 @@
+const url = require('url')
+const path = require('path')
 const electron = require('electron')
 const { app, BrowserWindow, Menu } = electron
 
@@ -45,9 +47,15 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 app.on('ready', () => {
-  require('./server/app')
+
   mainWindow = new BrowserWindow({})
-  mainWindow.loadURL('http://localhost:7000/index.html')
+  mainWindow.loadURL(
+    url.format({
+      pathname: path.join(__dirname, 'public/index.html'),
+      protocol: 'file',
+      slashes: true
+    })
+  )
 
   mainWindow.on('closed', () => {
     app.quit()
