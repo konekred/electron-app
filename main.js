@@ -47,8 +47,10 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 app.on('ready', () => {
+  mainWindow = new BrowserWindow({ show: false })
+  mainWindow.maximize()
+  mainWindow.show()
 
-  mainWindow = new BrowserWindow({})
   mainWindow.loadURL(
     url.format({
       pathname: path.join(__dirname, 'public/index.html'),
@@ -65,5 +67,3 @@ app.on('ready', () => {
   Menu.setApplicationMenu(mainMenu)
   mainWindow.setMenuBarVisibility(true)
 })
-
-

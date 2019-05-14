@@ -5,8 +5,7 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "server": "nodemon ./server/app.js",
-    "dev": "webpack-dev-server --config ./webpack/webpack.dev.config.js --mode development",
+    "webpack": "webpack --watch --config ./webpack/webpack.dev.config.js --mode development",
     "build": "cross-env NODE_ENV=production webpack --config ./webpack/webpack.prod.config.js --mode production",
     "lint": "eslint ./src",
     "flow": "flow",
