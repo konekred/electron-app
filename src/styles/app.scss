@@ -1,5 +1,7 @@
 @import '../assets/fonts/quicksand/style.css';
 @import './variables/colors';
+@import './variables/common';
+@import './variables/breakpoints';
 
 * {
   box-sizing: border-box;
@@ -10,6 +12,23 @@ a {
   color: $blue;
 }
 
+input[type=text] {
+  padding: 8px 12px;
+  font-family: inherit;
+  border: $input-border;
+  border-radius: 3px;
+  transition: all 100ms ease-in-out;
+
+  &:focus {
+    outline: none;
+    border: 1px solid $blue;
+  }
+}
+
+h1 {
+  margin: 0px;
+}
+
 ul {
   margin: 0px;
   padding: 0px;
@@ -17,7 +36,6 @@ ul {
 
 body {
   background-color: #f3f3f3;
-  // background-color: $primary;
   margin: 0px;
   padding: 0px;
   font-family: 'Quicksand';

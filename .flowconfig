@@ -2,6 +2,7 @@
 .*/node_modules/*
 .*/server/*
 .*/lib/*
+.*/src/*
 .*/public/*
 .*/webpack/*
 .*/main.js

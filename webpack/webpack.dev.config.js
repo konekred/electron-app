@@ -98,6 +98,12 @@ module.exports = {
     host: '0.0.0.0',
     port: 7800,
     contentBase: path.resolve('public'),
-    historyApiFallback: true
+    historyApiFallback: true,
+    proxy: {
+      '/': {
+        target: 'http://localhost:7000',
+        // pathRewrite: { '^/api': '' }
+      }
+    }
   }
 }

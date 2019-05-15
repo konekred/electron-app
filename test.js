@@ -22,3 +22,11 @@
 //   console.log(worksheets)
 // })
 // // start: excel exporter sample
+
+
+const CsvReader = require('./lib/CsvReader')
+
+const csv = new CsvReader('C:/Users/ark/Desktop/dummy/Suppliers.csv')
+csv.read().then(rows => {
+  console.log(rows)
+})

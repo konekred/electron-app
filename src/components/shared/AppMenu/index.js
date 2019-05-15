@@ -7,6 +7,10 @@ const links = [
     url: '/'
   },
   {
+    text: 'Suppliers',
+    url: '/suppliers'
+  },
+  {
     text: 'Deliveries',
     url: '/deliveries'
   },

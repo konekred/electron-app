@@ -1,6 +1,6 @@
 {
   "server": {
-    "port": 7800
+    "port": 7000
   },
   "session": {
     "secret": "6398127928f1b2e",
@@ -9,5 +9,8 @@
     "cookie": {
       "secure": false
     }
+  },
+  "database": {
+    "connectionString": "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=C:/database/PaySight.mdb;"
   }
 }
