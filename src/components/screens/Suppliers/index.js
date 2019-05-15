@@ -7,6 +7,9 @@ import {
   Title
 } from 'lib/Page'
 
+// import { Query } from 'react-apollo'
+// import SuppliersQuery from '../../../graphql/queries/suppliers.gql'
+
 import SearchBar from 'shared/SearchBar'
 import './style.scss'
 
@@ -23,6 +26,10 @@ const Suppliers = () => (
 
       <PageSection>
         <Link to="/suppliers/import">Import Supplier</Link>
+      </PageSection>
+
+      <PageSection>
+
       </PageSection>
     </Container>
   </Page>

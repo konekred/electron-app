@@ -1,0 +1,14 @@
+query SuppliersQuery {
+  suppliers {
+    data {
+      id
+      code
+      name
+    }
+    pagination {
+      limit
+      pages
+      lastId
+    }
+  }
+}
