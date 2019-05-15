@@ -7,19 +7,17 @@ const links = [
     url: '/'
   },
   {
-    text: 'Docs',
-    url: '/menu/2'
+    text: 'Deliveries',
+    url: '/deliveries'
   },
   {
-    text: 'Test',
-    url: '/menu/3'
+    text: 'Bad Orders',
+    url: '/bad-orders'
   }
 ]
 
-const AppMenu = () => {
-  return (
-    <Menu links={links} />
-  )
-}
+const AppMenu = () => (
+  <Menu links={links} />
+)
 
 export default AppMenu

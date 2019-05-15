@@ -1,11 +1,24 @@
-const ADODB = require('node-adodb')
-const connection = ADODB.open('Provider=Microsoft.Jet.OLEDB.4.0;Data Source=/home/ark/develop/database/PaySight.mdb;')
 
-connection
-  .query('SELECT * FROM Dummy')
-  .then(data => {
-    console.log(JSON.stringify(data, null, 2));
-  })
-  .catch(error => {
-    console.error(error);
-  })
+// // start: database sample
+// const connectionString = 'Provider=Microsoft.Jet.OLEDB.4.0;Data Source=C:/Users/ark/Desktop/PaySight.mdb;'
+// const Database = require('./lib/Database')
+// const db = new Database(connectionString)
+
+// db.query('SELECT * FROM Dummy', ['%Zoei']).then(data => {
+//   console.log(data)
+// })
+
+// db.exec('INSERT INTO Dummy (FirstName, LastName) VALUES(?, ?)', ['Arielle Marie', 'Andrade']).then(success => {
+//   console.log(success)
+// })
+// // end: database sample
+
+
+
+// // start: excel exporter sample
+// const ExcelExporter = require('./lib/ExcelExporter')
+// const excel = new ExcelExporter('C:/Users/ark/Desktop/dummy/bad-orders.xlsx')
+// excel.read().then(worksheets => {
+//   console.log(worksheets)
+// })
+// // start: excel exporter sample

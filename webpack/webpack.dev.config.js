@@ -65,9 +65,24 @@ module.exports = {
               sourceMap: true
             }
           },
-        ],
-        include: path.resolve('src')
+          {
+            loader: 'style-resources-loader',
+            options: {
+              patterns: [
+                path.resolve('src/styles/variables/*.scss')
+              ]
+            }
+          }
+        ]
       },
+      {
+        test: /\.(eot|svg|ttf|woff|woff2|svg)$/,
+        use: [
+          {
+            loader: 'file-loader'
+          }
+        ]
+      }
     ]
   },
   plugins: [
@@ -81,7 +96,7 @@ module.exports = {
     hot: true,
     inline: true,
     host: '0.0.0.0',
-    port: 8080,
+    port: 7800,
     contentBase: path.resolve('public'),
     historyApiFallback: true
   }

@@ -63,9 +63,24 @@ module.exports = {
               sourceMap: true
             }
           },
-        ],
-        include: path.resolve('src')
+          {
+            loader: 'style-resources-loader',
+            options: {
+              patterns: [
+                path.resolve('src/styles/variables/*.scss')
+              ]
+            }
+          }
+        ]
       },
+      {
+        test: /\.(eot|svg|ttf|woff|woff2|svg)$/,
+        use: [
+          {
+            loader: 'file-loader'
+          }
+        ]
+      }
     ]
   },
   plugins: [
@@ -87,16 +102,16 @@ module.exports = {
       new UglifyJsPlugin({ sourceMap: true, cache: true }),
       new OptimizeCSSAssetsPlugin({})
     ],
-    splitChunks: {
-      chunks: "all",
-      cacheGroups: {
-        styles: {
-          name: "styles",
-          test: /\.css$/,
-          chunks: "all",
-          enforce: true
-        }
-      }
-    }
+    // splitChunks: {
+    //   chunks: "all",
+    //   cacheGroups: {
+    //     styles: {
+    //       name: "styles",
+    //       test: /\.css$/,
+    //       chunks: "all",
+    //       enforce: true
+    //     }
+    //   }
+    // }
   }
 }

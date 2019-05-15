@@ -51,7 +51,6 @@
     "camelcase": [2, { "properties": "never" }],
     "object-curly-spacing": ["error", "always"],
     "flowtype/no-types-missing-file-annotation": 0,
-    "jsx-quotes": ["error", "prefer-double"],
     "react/jsx-curly-spacing": [2, { "when": "never", "spacing": { "objectLiterals": "never" }}]
   }
 }

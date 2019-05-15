@@ -1,10 +1,10 @@
 import React from 'react'
-import AppMenu from 'shared/AppMenu'
+import Header from 'shared/Header'
 import Routes from './Routes'
 
 const App = () => (
   <Routes>
-    <AppMenu />
+    <Header />
   </Routes>
 )
 

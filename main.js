@@ -1,7 +1,8 @@
-const url = require('url')
 const path = require('path')
 const electron = require('electron')
 const { app, BrowserWindow, Menu } = electron
+
+process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
 
 let mainWindow = null
 
@@ -47,17 +48,21 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 app.on('ready', () => {
-  mainWindow = new BrowserWindow({ show: false })
+
+  // start server
+  require('./server/app')
+  const settings = require('./config/settings')
+
+  // start electron window
+  mainWindow = new BrowserWindow({
+    show: false,
+    icon: path.join(__dirname, 'assets/icons/win/icon.ico')
+  })
+
   mainWindow.maximize()
   mainWindow.show()
 
-  mainWindow.loadURL(
-    url.format({
-      pathname: path.join(__dirname, 'public/index.html'),
-      protocol: 'file',
-      slashes: true
-    })
-  )
+  mainWindow.loadURL(`http://localhost:${settings.server.port}`)
 
   mainWindow.on('closed', () => {
     app.quit()

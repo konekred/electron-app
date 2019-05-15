@@ -2,5 +2,14 @@
   > ul {
     display: flex;
     list-style: none;
+
+    > li {
+      > a {
+        display: block;
+        padding: 15px;
+        font-size: 14px;
+        color: $white;
+      }
+    }
   }
 }

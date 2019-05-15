@@ -2,10 +2,10 @@ import React from 'react'
 import Container from 'lib/Container'
 import './style.scss'
 
-const Home = () => (
+const BadOrders = () => (
   <Container>
-    <h1>Home Page</h1>
+    <h1>Bad Orders</h1>
   </Container>
 )
 
-export default Home
+export default BadOrders

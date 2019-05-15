@@ -1,9 +1,24 @@
+@import '../assets/fonts/quicksand/style.css';
+@import './variables/colors';
+
 * {
   box-sizing: border-box;
 }
 
-body {
-  background-color: #f3f3f3;
+a {
+  text-decoration: none;
+  color: $blue;
+}
+
+ul {
   margin: 0px;
   padding: 0px;
+}
+
+body {
+  background-color: #f3f3f3;
+  // background-color: $primary;
+  margin: 0px;
+  padding: 0px;
+  font-family: 'Quicksand';
 }

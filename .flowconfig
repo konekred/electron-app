@@ -1,6 +1,7 @@
 [ignore]
 .*/node_modules/*
 .*/server/*
+.*/lib/*
 .*/public/*
 .*/webpack/*
 .*/main.js
