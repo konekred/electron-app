@@ -1,11 +1,14 @@
+const fs = require('fs')
+const fsextra = require('fs-extra')
 const path = require('path')
 const router = require('express').Router()
 const multer = require('multer')
 const upload = multer({ dest: 'tmp' })
-const CsvReader = require('../../lib/CsvReader')
+
+const db = require('../database')
 const settings = require('../../config/settings')
 const Supplier = require('../models/Supplier')
-
+const tmpPath = path.resolve('tmp')
 
 router.get('/check', (req, res) => {
   res.json({
@@ -15,6 +18,7 @@ router.get('/check', (req, res) => {
     resolve: path.resolve('konekred')
   })
 })
+
 
 router.post('/sql', async (req, res) => {
   try {
@@ -51,37 +55,10 @@ router.post('/sql', async (req, res) => {
   }
 })
 
+
 router.post('/suppliers/import', upload.single('file'), async (req, res) => {
   const { body, file } = req
-
-  const csvReader = new CsvReader(file.path)
-  const rows = await csvReader.read()
-
-  for (let i = 0; i < rows.length; i++) {
-    if (rows[i].name) {
-      const supplier = await Supplier.findByName(rows[i].name)
-
-      if (supplier) {
-        rows[i].ok = false
-        rows[i].errors = [
-          {
-            message: 'supplier already exists'
-          }
-        ]
-      } else {
-        rows[i].ok = true
-      }
-    } else {
-      rows[i].ok = false
-      rows[i].errors = [
-        {
-          message: 'supplier does not have a name'
-        }
-      ]
-    }
-  }
-
-  req.session.importSupplierRows = rows
+  const rows = await Supplier.csvReader(file.path, true)
 
   res.json({
     ok: true,
@@ -91,8 +68,47 @@ router.post('/suppliers/import', upload.single('file'), async (req, res) => {
   })
 })
 
+
+router.post('/suppliers/save-import', async (req, res) => {
+  try {
+    const importResult = await Supplier.saveImport()
+
+    res.json({
+      ok: importResult.ok,
+      successCount: importResult.successCount
+    })
+  } catch (err) {
+    res.json({
+      ok: false,
+      error: err
+    })
+  }
+})
+
+
 router.get('/settings', async (req, res) => {
   res.json(settings)
+})
+
+
+router.post('/clean', async (req, res) => {
+  try {
+    if (!fs.existsSync(tmpPath)) {
+      fs.mkdirSync(tmpPath)
+    } else {
+      fsextra.emptyDirSync(tmpPath)
+    }
+
+    res.json({
+      ok: true,
+      message: 'tmp folder has been clean'
+    })
+  } catch (err) {
+    res.json({
+      ok: false,
+      error: err
+    })
+  }
 })
 
 module.exports = router

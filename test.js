@@ -76,3 +76,11 @@
 
 
 
+const fieldsExists = require(`${process.cwd()}/lib/helpers/fieldsExists`)
+
+const data = {
+  id: 1,
+  name: 'wilson'
+}
+
+console.log(fieldsExists(['id', 'name', 'address'], data))

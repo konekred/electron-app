@@ -68,4 +68,15 @@
 
 .suppliers-import-table {
   font-size: 10px;
+
+  tr {
+    th, td {
+      padding: 8px 4px;
+    }
+  }
+}
+
+.process-loading {
+  padding: 30px 15px;
+  text-align: center;
 }
