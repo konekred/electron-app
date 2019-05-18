@@ -3,10 +3,10 @@ import {
   Page,
   Title,
   PageSection
-} from 'lib/Page'
+} from '@lib/Page'
 
-import Container from 'lib/Container'
-import { toFormData } from 'helpers'
+import Container from '@lib/Container'
+import { toFormData } from '@helpers'
 
 import './style.scss'
 
@@ -38,9 +38,7 @@ const Home = () => {
         </PageSection>
 
         <PageSection>
-
             Content for Dashboard
-
         </PageSection>
 
         <PageSection>
@@ -53,7 +51,6 @@ const Home = () => {
         </PageSection>
       </Container>
     </Page>
-
   )
 }
 

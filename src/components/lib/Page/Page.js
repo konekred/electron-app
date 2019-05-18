@@ -1,11 +1,13 @@
 import React from 'react'
+import classNames from 'classnames'
 
 type Props = {
-  children: Object
+  name: string,
+  children?: Object
 }
 
-const Page = ({ children }: Props) => (
-  <div className="page">
+const Page = ({ name, children }: Props) => (
+  <div className={classNames('page', name)}>
     {children}
   </div>
 )

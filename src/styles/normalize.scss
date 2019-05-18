@@ -1,0 +1,61 @@
+* {
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+  color: $blue;
+}
+
+input[type=text] {
+  padding: 8px 12px;
+  font-family: inherit;
+  border: $input-border;
+  border-radius: 3px;
+  transition: all 100ms ease-in-out;
+
+  &:focus {
+    outline: none;
+    border: 1px solid $blue;
+  }
+}
+
+button {
+  font-family: inherit;
+}
+
+h1 {
+  margin: 0px;
+}
+
+ul {
+  margin: 0px;
+  padding: 0px;
+  list-style: none;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+
+  tr {
+    td,
+    th {
+      text-align: left;
+      padding: 8px 12px;
+      border-top: 1px solid #dee2e6;
+
+      &.number {
+        width: 40px;
+      }
+    }
+
+    &:last-child {
+      td,
+      th {
+        border-bottom: 1px solid #dee2e6;
+      }
+    }
+  }
+}

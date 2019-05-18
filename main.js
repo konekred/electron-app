@@ -1,6 +1,7 @@
 const path = require('path')
 const electron = require('electron')
 const { app, BrowserWindow, Menu } = electron
+const settings = require('./config/settings')
 
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
 
@@ -34,6 +35,13 @@ if (process.env.NODE_ENV !== 'production') {
     label: 'Developer',
     submenu: [
       {
+        label: 'SQL Query',
+        accelerator: process.platform == 'darwin' ? 'Command+I' : 'Ctrl+Q',
+        click(item, focusedWindow) {
+          focusedWindow.loadURL(`http://localhost:${settings.server.port}/sql`)
+        }
+      },
+      {
         label: 'Toggle Tools',
         accelerator: process.platform == 'darwin' ? 'Command+I' : 'Ctrl+I',
         click(item, focusedWindow) {
@@ -51,7 +59,8 @@ app.on('ready', () => {
 
   // start server
   require('./server/app')
-  const settings = require('./config/settings')
+
+  console.log('LOGGER')
 
   // start electron window
   mainWindow = new BrowserWindow({

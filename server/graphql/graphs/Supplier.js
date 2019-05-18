@@ -15,6 +15,10 @@ const SupplierGraph = {
           name: 'limit',
           type: GraphQLInt
         },
+        page: {
+          name: 'page',
+          type: GraphQLInt
+        },
         lastId: {
           name: 'lastId',
           type: GraphQLInt
@@ -23,31 +27,42 @@ const SupplierGraph = {
       resolve: (root, args) => {
         return new Promise(async (resolve, reject) => {
           try {
-            const params = []
             const limit = args.limit || null
-            const lastId = args.lastId || null
+            const page = args.page || 1
 
             const topClause = limit ? `TOP ${limit} ` : ''
             let whereClause = ''
 
-            if (lastId) {
-              whereClause = `${whereClause}[id] > ?`
-              params.push(lastId)
+            if (page > 1 && limit) {
+              whereClause = `${whereClause}[id] NOT IN (SELECT TOP ${(page - 1) * limit} [id] FROM [Suppliers] ORDER BY [Suppliers].[name] ASC)`
             }
 
-            if (params.length) {
+            if (whereClause) {
               whereClause = ` WHERE ${whereClause}`
             }
 
-            const data = await db.query(`SELECT ${topClause}[id], [name], [code], [TIN] FROM Suppliers${whereClause}`, params)
+            const data = await db.query(`
+              SELECT
+                ${topClause}
+                [id],
+                [code],
+                [name],
+                [email],
+                [representative]
+              FROM
+                [Suppliers]
+              ${whereClause}
+              ORDER BY
+                [Suppliers].[name] ASC
+            `, null)
 
             const count = await db.query('SELECT COUNT(*) AS [count] FROM Suppliers', null, { first: true })
             const pages = limit ? Math.ceil(count.count / limit) : 1
             const pagination = {
               count: count.count,
-              pages: pages,
-              limit: limit,
-              lastId: data.length ? data[data.length - 1].id : null
+              limit,
+              pages,
+              page
             }
 
             resolve({

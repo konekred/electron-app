@@ -1,6 +1,7 @@
 const {
   GraphQLID,
   GraphQLString,
+  GraphQLBoolean,
   GraphQLObjectType
 } = require('graphql')
 
@@ -18,6 +19,33 @@ const SupplierType = new GraphQLObjectType({
     },
     TIN: {
       type: GraphQLString
+    },
+    taxClass: {
+      type: GraphQLString
+    },
+    principal: {
+      type: GraphQLString
+    },
+    terms: {
+      type: GraphQLString
+    },
+    address: {
+      type: GraphQLString
+    },
+    contactNumber: {
+      type: GraphQLString
+    },
+    email: {
+      type: GraphQLString
+    },
+    representative: {
+      type: GraphQLString
+    },
+    representativeContact: {
+      type: GraphQLString
+    },
+    active: {
+      type: GraphQLBoolean
     }
   })
 })

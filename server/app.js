@@ -1,3 +1,5 @@
+const fs = require('fs')
+const fsextra = require('fs-extra')
 const path = require('path')
 const express = require('express')
 const graphQLHttp = require('express-graphql')
@@ -11,6 +13,7 @@ const routes = require('./routes')
 const graphQLSchema = require('./graphql')
 
 const publicPath = path.join(__dirname, '/../public')
+const tmpPath = path.resolve('tmp')
 
 const PORT = process.env.PORT ? process.env.PORT : settings.server.port
 
@@ -31,13 +34,18 @@ app.use('/graphql', graphQLHttp(() => ({
   graphiql: true
 })))
 
-
 // SPA fallback
 app.get('/*', (req, res) => {
-  res.sendFile(path.join(__dirname, '/../public/index.html'))
+  const indexHtmlPath = path.join(__dirname, '/../public/index.html')
+  res.sendFile(indexHtmlPath)
 })
 
+if (!fs.existsSync(tmpPath)) {
+  fs.mkdirSync(tmpPath)
+} else {
+  fsextra.emptyDirSync(tmpPath)
+}
+
 app.listen(PORT, () => {
-  console.log(publicPath)
   console.log(`app started http://localhost:${PORT}`)
 })

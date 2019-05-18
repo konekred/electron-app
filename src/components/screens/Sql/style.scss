@@ -1,0 +1,74 @@
+.react-monaco-editor-container {
+  margin: auto;
+  border: 1px solid #353535;
+}
+
+.sql-page {
+  background-color: #1e1e1e;
+  padding: 80px 30px 30px 30px;
+
+  .sql-action {
+    display: flex;
+    justify-content: center;
+    padding: 15px 0px;
+
+    button {
+      background-color: $primary;
+      padding: 15px 40px;
+      border: none;
+      border-radius: 3px;
+      color: $white;
+      cursor: pointer;
+    }
+  }
+}
+
+.sql-results {
+  background-color: $white;
+
+  .sql-status {
+    display: none;
+
+    &.active {
+      display: block;
+      background-color: $green;
+      height: 5px;
+    }
+
+    &.error {
+      display: block;
+      background-color: $red;
+      height: 5px;
+    }
+  }
+
+  .sql-error {
+    display: none;
+    background-color: $red;
+    padding: 30px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12px;
+    color: $white;
+
+    &.active {
+      display: block;
+    }
+  }
+
+  .sql-table {
+    padding-bottom: 50px;
+
+    table {
+      font-size: 11px;
+
+      th, td {
+        white-space: nowrap;
+
+        &:last-child {
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+

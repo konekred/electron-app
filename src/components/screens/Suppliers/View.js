@@ -1,24 +1,25 @@
 import React from 'react'
+import Container from '@lib/Container'
 import {
   Page,
   Title,
   PageSection
 } from '@lib/Page'
 
-import Container from '@lib/Container'
+import './style.scss'
 
-const NotFound = () => (
+const View = () => (
   <Page>
     <Container>
       <PageSection>
-        <Title text="Content Not Found" />
+        <Title text="View Supplier Info." />
       </PageSection>
 
       <PageSection>
-        404 Error
+        Content for View Supplier
       </PageSection>
     </Container>
   </Page>
 )
 
-export default NotFound
+export default View

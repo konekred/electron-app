@@ -3,9 +3,9 @@ import {
   Page,
   PageSection,
   Title
-} from 'lib/Page'
+} from '@lib/Page'
 
-import Container from 'lib/Container'
+import Container from '@lib/Container'
 import './style.scss'
 
 const BadOrders = () => (

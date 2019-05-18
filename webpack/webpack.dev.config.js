@@ -2,6 +2,7 @@ const path = require('path')
 const { HotModuleReplacementPlugin } = require('webpack')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
 
 const entryfile = path.resolve('src/app.js')
 const outputpath = path.resolve('public/assets')
@@ -19,14 +20,14 @@ module.exports = {
   },
   resolve: {
     alias: {
-      lib: path.resolve('src/components/lib'),
-      shared: path.resolve('src/components/shared'),
-      screens: path.resolve('src/components/screens'),
-      styles: path.resolve('src/styles'),
-      graphql: path.resolve('src/graphql'),
-      helpers: path.resolve('src/helpers')
+      '@lib': path.resolve('src/components/lib'),
+      '@shared': path.resolve('src/components/shared'),
+      '@screens': path.resolve('src/components/screens'),
+      '@styles': path.resolve('src/styles'),
+      '@graphql': path.resolve('src/graphql'),
+      '@helpers': path.resolve('src/helpers')
     },
-    // extensions: ['.js', '.jsx', '.ts' ,'.css', '.png', '.jpg', '.gif', '.jpeg']
+    extensions: ['*', '.js', '.jsx']
   },
   module: {
     rules: [
@@ -76,22 +77,14 @@ module.exports = {
           }
         ]
       },
-      // {
-      //   test: /\.(graphql|gql)$/i,
-      //   exclude: /node_modules/,
-      //   use: [
-      //     {
-      //       loader: 'graphql-tag/loader'
-      //     }
-      //   ]
-      // },
+      {
+        test: /\.(graphql|gql)$/i,
+        exclude: /node_modules/,
+        use: ['graphql-tag/loader']
+      },
       {
         test: /\.(eot|svg|ttf|woff|woff2|svg)$/,
-        use: [
-          {
-            loader: 'file-loader'
-          }
-        ]
+        use: ['file-loader']
       }
     ]
   },
@@ -100,7 +93,8 @@ module.exports = {
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
       filename: 'app.css'
-    })
+    }),
+    new MonacoWebpackPlugin({ languages: ['sql'] })
   ],
   devServer: {
     hot: true,

@@ -6,16 +6,16 @@ const {
 const PaginationType = new GraphQLObjectType({
   name: 'PaginationType',
   fields: () => ({
-    pages: {
-      type: GraphQLInt
-    },
     count: {
       type: GraphQLInt
     },
     limit: {
       type: GraphQLInt
     },
-    lastId: {
+    pages: {
+      type: GraphQLInt
+    },
+    page: {
       type: GraphQLInt
     }
   })

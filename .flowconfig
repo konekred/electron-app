@@ -2,7 +2,9 @@
 .*/node_modules/*
 .*/server/*
 .*/lib/*
-.*/src/*
+.*/src/assets/*
+.*/src/helpers/*
+.*/src/app.js
 .*/public/*
 .*/webpack/*
 .*/main.js
@@ -11,7 +13,7 @@
 [include]
 
 [libs]
-./src
+./src/components
 
 [lints]
 

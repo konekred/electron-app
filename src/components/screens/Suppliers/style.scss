@@ -1,0 +1,71 @@
+.suppliers-table {
+  tr {
+    th {
+      text-align: center;
+
+      &.code {
+        width: 150px;
+      }
+
+      &.email {
+        width: 200px;
+      }
+
+      &.representative {
+        width: 210px;
+      }
+
+      &.representative-number {
+        width: 130px;
+      }
+    }
+
+    td {
+      text-align: center;
+
+      &.name,
+      &.code {
+        text-transform: uppercase;
+      }
+
+      &.code {
+        font-size: 12px;
+      }
+    }
+  }
+}
+
+.action-bar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+
+  .actions {
+    &.two {
+      width: 50%;
+    }
+
+    &.link-action {
+      display: flex;
+      justify-content: flex-end;
+
+      > a {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        > svg {
+          font-size: 32px;
+        }
+
+        > span {
+          font-size: 13px;
+        }
+      }
+    }
+  }
+}
+
+.suppliers-import-table {
+  font-size: 10px;
+}

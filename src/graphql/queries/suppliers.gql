@@ -1,14 +1,24 @@
-query SuppliersQuery {
-  suppliers {
+query SuppliersQuery($limit: Int, $page: Int) {
+  suppliers(limit: $limit, page: $page) {
     data {
       id
       code
       name
+      TIN
+      email
+      representative
     }
     pagination {
       limit
+      count
       pages
-      lastId
+      page
+    }
+    errors {
+      message
+      type
+      path
+      value
     }
   }
 }

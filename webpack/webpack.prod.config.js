@@ -5,6 +5,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const CompressionPlugin = require('compression-webpack-plugin')
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
 
 const entryfile = path.resolve('src/app.js')
 const outputpath = path.resolve('public/assets')
@@ -17,18 +18,19 @@ module.exports = {
   ],
   output: {
     filename: 'app.js',
-    path: path.resolve('public/assets'),
+    path: outputpath,
+    publicPath: '/assets/'
   },
   resolve: {
     alias: {
-      lib: path.resolve('src/components/lib'),
-      shared: path.resolve('src/components/shared'),
-      screens: path.resolve('src/components/screens'),
-      styles: path.resolve('src/styles'),
-      graphql: path.resolve('src/graphql'),
-      helpers: path.resolve('src/helpers')
+      '@lib': path.resolve('src/components/lib'),
+      '@shared': path.resolve('src/components/shared'),
+      '@screens': path.resolve('src/components/screens'),
+      '@styles': path.resolve('src/styles'),
+      '@graphql': path.resolve('src/graphql'),
+      '@helpers': path.resolve('src/helpers')
     },
-    extensions: ['.js', '.jsx', '.css', '.png', '.jpg', '.gif', '.jpeg']
+    extensions: ['*', '.js', '.jsx']
   },
   module: {
     rules: [
@@ -74,22 +76,14 @@ module.exports = {
           }
         ]
       },
-      // {
-      //   test: /\.(graphql|gql)$/i,
-      //   exclude: /node_modules/,
-      //   use: [
-      //     {
-      //       loader: 'graphql-tag/loader'
-      //     }
-      //   ]
-      // },
+      {
+        test: /\.(graphql|gql)$/i,
+        exclude: /node_modules/,
+        use: ['graphql-tag/loader']
+      },
       {
         test: /\.(eot|svg|ttf|woff|woff2|svg)$/,
-        use: [
-          {
-            loader: 'file-loader'
-          }
-        ]
+        use: ['file-loader']
       }
     ]
   },
@@ -100,12 +94,14 @@ module.exports = {
       }
     }),
     new CleanWebpackPlugin(),
+    new webpack.optimize.ModuleConcatenationPlugin(),
     new MiniCssExtractPlugin({
       filename: 'app.css'
     }),
+    new MonacoWebpackPlugin({ languages: ['sql'] }),
     new CompressionPlugin({
       test: /\.js$|\.css$|\.html$/
-    })
+    }),
   ],
   optimization: {
     minimizer: [
@@ -113,15 +109,15 @@ module.exports = {
       new OptimizeCSSAssetsPlugin({})
     ],
     // splitChunks: {
-    //   chunks: "all",
-    //   cacheGroups: {
-    //     styles: {
-    //       name: "styles",
-    //       test: /\.css$/,
-    //       chunks: "all",
-    //       enforce: true
-    //     }
-    //   }
+    //   // chunks: "all",
+    //   // cacheGroups: {
+    //   //   styles: {
+    //   //     name: "styles",
+    //   //     test: /\.css$/,
+    //   //     chunks: "all",
+    //   //     enforce: true
+    //   //   }
+    //   // }
     // }
   }
 }

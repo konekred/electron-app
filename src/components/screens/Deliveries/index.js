@@ -3,9 +3,9 @@ import {
   Page,
   Title,
   PageSection
-} from 'lib/Page'
+} from '@lib/Page'
 
-import Container from 'lib/Container'
+import Container from '@lib/Container'
 import './style.scss'
 
 const Deliveries = () => (
