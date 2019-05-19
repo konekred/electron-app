@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React from 'react'
 import {
   Page,
   Title,
@@ -6,29 +6,9 @@ import {
 } from '@lib/Page'
 
 import Container from '@lib/Container'
-import { toFormData } from '@helpers'
-
 import './style.scss'
 
 const Home = () => {
-  const fileInput = useRef(null)
-
-  const onClick = () => {
-    const fetchOption = {
-      method: 'POST',
-      body: toFormData({
-        excel: fileInput.current.files[0],
-        firstName: 'Wilson',
-        lastName: 'Anciro'
-      })
-    }
-
-    // console.log()
-
-    fetch('/upload', fetchOption).then(data => {
-      console.log(data)
-    })
-  }
 
   return (
     <Page>
@@ -39,15 +19,6 @@ const Home = () => {
 
         <PageSection>
             Content for Dashboard
-        </PageSection>
-
-        <PageSection>
-          <input
-            type="file"
-            ref={fileInput}
-            accept=".csv"
-          />
-          <button onClick={onClick}>Click MMe!</button>
         </PageSection>
       </Container>
     </Page>

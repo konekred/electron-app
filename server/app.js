@@ -6,10 +6,10 @@ const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 
-const root = process.cwd()
+const root = '..'
 const settings = require(`${root}/config/settings`)
 const logger = require(`${root}/logger/app`)
-const publicPath = path.resolve('public')
+const publicPath = path.join(__dirname, '/../public')
 
 const routes = require('./routes')
 const graphQLSchema = require('./graphql')

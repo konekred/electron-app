@@ -11,6 +11,11 @@
     }
   },
   "database": {
-    "connectionString": "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=C:/database/PaySight.mdb;"
+    "connectionString": "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=C:/database/PaySight.mdb;",
+    "host": "127.0.0.1",
+    "port": 3306,
+    "username": "root",
+    "password": "ABC12abc",
+    "database": "paysight_db"
   }
 }

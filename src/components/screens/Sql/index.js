@@ -106,8 +106,7 @@ class SqlEditor extends React.Component {
                   queryError: json.error
                 })
               }).catch(err => {
-                console.log(err)
-
+                console.log(err) // eslint-disable-line no-console
               })
             }}>
               RUN QUERY

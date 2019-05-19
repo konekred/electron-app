@@ -1,12 +1,14 @@
 [ignore]
 .*/node_modules/*
+.*/public/*
+.*/webpack/*
 .*/server/*
 .*/lib/*
+.*/logger/*
+.*/installers/*
 .*/src/assets/*
 .*/src/helpers/*
 .*/src/app.js
-.*/public/*
-.*/webpack/*
 .*/main.js
 .*/test.js
 

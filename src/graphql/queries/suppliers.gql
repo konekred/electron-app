@@ -1,10 +1,10 @@
-query SuppliersQuery($limit: Int, $page: Int) {
-  suppliers(limit: $limit, page: $page) {
+query SuppliersQuery($limit: Int, $page: Int, $search: String) {
+  suppliers(limit: $limit, page: $page, search: $search) {
     data {
       id
       code
       name
-      TIN
+      tinNumber
     }
     pagination {
       limit

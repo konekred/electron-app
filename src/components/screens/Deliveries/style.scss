@@ -1,0 +1,45 @@
+.deliveries-table {
+  tr {
+    th, td {
+      &.date,
+      &.invoice-number,
+      &.supplier {
+        text-align: center;
+      }
+
+      &.amount {
+        text-align: right;
+      }
+    }
+  }
+}
+
+.deliveries-import {
+  .import-table {
+    tr {
+      th, td {
+        font-size: 14px;
+
+        &.date,
+        &.invoice-number,
+        &.supplier {
+          text-align: center;
+        }
+
+        &.supplier {
+          position: relative;
+
+          .badge {
+            position: absolute;
+            margin-left: 5px;
+            border-radius: 20px;
+            top: 5px;
+          }
+        }
+        &.amount {
+          text-align: right;
+        }
+      }
+    }
+  }
+}

@@ -1,6 +1,7 @@
-const root = process.cwd()
+const root = '../..'
 const fs = require('fs')
 const path = require('path')
+const moment = require('moment')
 const db = require('../database')
 const CsvReader = require(`${root}/lib/CsvReader`)
 const fieldsExists = require(`${root}/lib/helpers/fieldsExists`)
@@ -8,125 +9,162 @@ const tmpPath = path.resolve('tmp')
 const Supplier = require('./Supplier')
 
 class Delivery {
+  static findByInvoiceNumber(invoiceNumber) {
+    return new Promise((resolve, reject) => {
+      db.queryFirst('SELECT `id`, `invoiceNumber` FROM `deliveries` WHERE `invoiceNumber` = :invoiceNumber LIMIT 1', { invoiceNumber }).then(delivery => {
+        resolve(delivery)
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  }
+
   static insert(data) {
     return new Promise((resolve, reject) => {
-      if (fieldsExists(['invoiceNumber', 'supplierId', 'amount', 'date'], data)) {
-        const sql = `
-          INSERT INTO [Deliveries] (
-            [invoiceNumber],
-            [supplierId],
-            [amount],
-            [date]
-          )
-          VALUES (?, ?, ?, ?)
-        `
-        const params = [
-          data.invoiceNumber,
-          data.supplierId,
-          data.amount,
-          data.date
-        ]
+      const sql = `
+        INSERT INTO deliveries (
+          invoiceNumber,
+          supplierId,
+          \`amount\`,
+          \`date\`
+        ) VALUES (
+          :invoiceNumber,
+          :supplierId,
+          :amount,
+          :date
+        )
+      `
 
-        db.exec(sql, params).then(success => {
-          resolve(success)
-        }).catch(err => {
-          reject(err)
+      db.exec(sql, data, 'INSERT').then(data => {
+        resolve({
+          id: data[0],
+          count: data[1]
         })
-
-      } else {
-        reject({ message: 'did not meet required fields' })
-      }
+      }).catch(err => {
+        reject(err)
+      })
     })
   }
 
 
   static csvReader(filepath, validate = false) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const csvReader = new CsvReader(filepath)
-        const rows = await csvReader.read()
+    return new Promise((resolve, reject) => {
+      const csvReader = new CsvReader(filepath)
+
+      csvReader.read().then(async (rows) => {
+        const errors = []
 
         if (validate) {
-          for (let i = 0; i < rows.length; i++) {
-            if (rows[i].supplier) {
-              const supplier = await Supplier.findByName(rows[i].supplier)
-              rows[i].ok = true
+          let isValidCsvFormat = false
 
-              if (supplier) {
-                rows[i].supplierId = supplier.id
-              } else {
-                const insertSupplier = await Supplier.insertAndFind({ name: rows[i].supplier })
-                rows[i].supplierId = insertSupplier.id
-              }
-            } else {
-              rows[i].ok = false
-              rows[i].errors = [
-                {
-                  message: 'supplier does not have a name'
+          if (rows.length > 0) {
+            isValidCsvFormat = fieldsExists(['date', 'invoiceNumber', 'supplier', 'amount'], rows[0])
+          }
+
+          if (isValidCsvFormat) {
+            for (let i = 0; i < rows.length; i++) {
+              const row = rows[i]
+
+              row.ok = true
+              row.date = moment(row.date, 'D-MMM-YY').format('YYYY-MM-DD')
+              row.amount = parseFloat(row.amount.replace(/,/g, ''))
+
+              if (row.supplier && row.invoiceNumber) {
+                row.supplier = row.supplier.trim()
+
+                await Delivery.findByInvoiceNumber(row.invoiceNumber).then(delivery => {
+                  if (delivery) {
+                    row.ok = false
+                  }
+                }).catch(err => {
+                  errors.push(err)
+                })
+
+                const supplier = await Supplier.findByName(row.supplier).catch(err => {
+                  errors.push(err)
+                })
+
+                if (supplier) {
+                  row.supplierId = supplier.id
+                  row.isNewSupplier = false
+                } else {
+                  row.isNewSupplier = true
                 }
-              ]
+              }
             }
           }
         }
 
-        fs.writeFileSync(path.join(tmpPath, 'import-deliveries.json'), JSON.stringify({ deliveries: rows }, null, 2))
-        resolve(rows)
+        fs.writeFileSync(path.join(tmpPath, 'import-delivery.json'), JSON.stringify({ deliveries: rows }, null, 2))
+        resolve({
+          rows,
+          errors: errors.length == 0 ? null : errors
+        })
 
-      } catch (err) {
+      }).catch(err => {
         reject(err)
-      }
+      })
     })
   }
 
 
   static saveImport() {
-  //   return new Promise(async (resolve, reject) => {
-  //     const importFilePath = path.join(tmpPath, 'import-suppliers.json')
+    return new Promise(async (resolve, reject) => {
+      const importFilePath = path.join(tmpPath, 'import-delivery.json')
 
-  //     if (fs.existsSync(importFilePath)) {
-  //       const suppliersJsonStr = fs.readFileSync(importFilePath)
-  //       if (JSON.parse(suppliersJsonStr)) {
-  //         const jsonData = JSON.parse(suppliersJsonStr)
-  //         const suppliers = jsonData.suppliers
+      if (fs.existsSync(importFilePath)) {
+        const jsonStr = fs.readFileSync(importFilePath)
+        if (JSON.parse(jsonStr)) {
+          const jsonData = JSON.parse(jsonStr)
+          const deliveries = jsonData.deliveries
 
-  //         let successCount = 0
-  //         const dataCount = suppliers.length
-  //         const errors = []
+          let successCount = 0
+          const dataCount = deliveries.length
+          const errors = []
 
-  //         for (let i = 0; i < suppliers.length; i++) {
-  //           const supplier = suppliers[i]
-  //           if (supplier.ok) {
-  //             await Supplier.insert(supplier).then(success => {
-  //               if (success) {
-  //                 successCount += 1
-  //               }
-  //             }).catch(err => {
-  //               errors.push({
-  //                 data: supplier,
-  //                 error: err
-  //               })
-  //             })
-  //           } else {
-  //             errors.push({
-  //               data: supplier,
-  //               message: `${supplier.name} already exists`
-  //             })
-  //           }
-  //         }
+          for (let i = 0; i < deliveries.length; i++) {
+            const delivery = deliveries[i]
 
-  //         fs.unlinkSync(importFilePath)
+            if (delivery.isNewSupplier) {
+              await db.exec('INSERT INTO suppliers (`name`) VALUES (:name)', { name: delivery.supplier }, 'INSERT').then(data => {
+                delivery.supplierId = data[0]
+              }).catch(err => {
+                errors.push(err)
+              })
+            }
 
-  //         resolve({
-  //           ok: true,
-  //           successCount,
-  //           dataCount,
-  //           errors
-  //         })
-  //       }
-  //     } else {
-  //       reject({ message: 'imports-supplier.json file does not exists' })
-  //     }
-  //   })
+            if (delivery.ok) {
+              await Delivery.insert(delivery).then(success => {
+                if (success) {
+                  successCount += 1
+                }
+              }).catch(err => {
+                errors.push({
+                  data: delivery,
+                  error: err
+                })
+              })
+            } else {
+              errors.push({
+                data: delivery,
+                message: `invoice number ${delivery.invoiceNumber} already exists`
+              })
+            }
+          }
+
+          fs.unlinkSync(importFilePath)
+
+          resolve({
+            ok: true,
+            successCount,
+            dataCount,
+            errors
+          })
+        }
+      } else {
+        reject({ message: 'imports-delivery.json file does not exists' })
+      }
+    })
   }
 }
 

@@ -1,4 +1,4 @@
-const root = process.cwd()
+const root = '../..'
 const fs = require('fs')
 const path = require('path')
 const db = require('../database')
@@ -9,49 +9,45 @@ const tmpPath = path.resolve('tmp')
 class Supplier {
   static findByName(name) {
     return new Promise((resolve, reject) => {
-      db.query('SELECT TOP 1 [id], [code], [name] FROM [Suppliers] WHERE [name] LIKE ?', [name], { first: true }).then(data => {
-        resolve(data)
+      db.queryFirst('SELECT `id`, `name` FROM `suppliers` WHERE `name` = :name LIMIT 1', { name }).then(supplier => {
+        resolve(supplier)
       }).catch(err => {
         reject(err)
       })
     })
   }
 
-
   static insert(data) {
     return new Promise((resolve, reject) => {
-      if (fieldsExists(['name'], data)) {
-        const sql = `
-          INSERT INTO [Suppliers] (
-            [code],
-            [name],
-            [address],
-            [TIN],
-            [taxClass],
-            [principal],
-            [terms]
-          )
-          VALUES (?, ?, ?, ?, ?, ?, ?)
-        `
-        const params = [
-          data.code,
-          data.name,
-          data.address,
-          data.TIN,
-          data.taxClass,
-          data.principal,
-          data.terms
-        ]
+      const sql = `
+        INSERT INTO suppliers (
+          code,
+          name,
+          address,
+          tinNumber,
+          taxClass,
+          principal,
+          terms
+        )
+        VALUES (
+          :code,
+          :name,
+          :address,
+          :tinNumber,
+          :taxClass,
+          :principal,
+          :terms
+        )
+      `
 
-        db.exec(sql, params).then(success => {
-          resolve(success)
-        }).catch(err => {
-          reject(err)
+      db.exec(sql, data, 'INSERT').then(data => {
+        resolve({
+          id: data[0],
+          count: 1
         })
-
-      } else {
-        reject({ message: 'did not meet required fields' })
-      }
+      }).catch(err => {
+        reject(err)
+      })
     })
   }
 
@@ -73,45 +69,61 @@ class Supplier {
     })
   }
 
-
   static csvReader(filepath, validate = false) {
     return new Promise(async (resolve, reject) => {
-      try {
-        const csvReader = new CsvReader(filepath)
-        const rows = await csvReader.read()
+
+      const csvReader = new CsvReader(filepath)
+      csvReader.read().then(async (rows) => {
+        const errors = []
 
         if (validate) {
-          for (let i = 0; i < rows.length; i++) {
-            if (rows[i].name) {
-              const supplier = await Supplier.findByName(rows[i].name)
+          let isValidCsvFormat = false
 
-              if (supplier) {
+          if (rows.length > 0) {
+            isValidCsvFormat = fieldsExists(['code', 'name', 'address', 'tinNumber', 'taxClass', 'principal', 'terms'], rows[0])
+          }
+
+          if (isValidCsvFormat) {
+            for (let i = 0; i < rows.length; i++) {
+              rows[i].ok = false
+
+              if (rows[i].name) {
+                rows[i].name = rows[i].name.trim()
+                const supplier = await Supplier.findByName(rows[i].name).catch(err => {
+                  errors.push(err)
+                })
+
+                if (supplier) {
+                  rows[i].ok = false
+                  rows[i].errors = [
+                    {
+                      message: 'supplier already exists'
+                    }
+                  ]
+                } else {
+                  rows[i].ok = true
+                }
+              } else {
                 rows[i].ok = false
                 rows[i].errors = [
                   {
-                    message: 'supplier already exists'
+                    message: 'supplier does not have a name'
                   }
                 ]
-              } else {
-                rows[i].ok = true
               }
-            } else {
-              rows[i].ok = false
-              rows[i].errors = [
-                {
-                  message: 'supplier does not have a name'
-                }
-              ]
             }
           }
         }
 
         fs.writeFileSync(path.join(tmpPath, 'import-suppliers.json'), JSON.stringify({ suppliers: rows }, null, 2))
-        resolve(rows)
+        resolve({
+          rows,
+          errors: errors.length == 0 ? null : errors
+        })
 
-      } catch (err) {
+      }).catch(err => {
         reject(err)
-      }
+      })
     })
   }
 
@@ -122,6 +134,7 @@ class Supplier {
 
       if (fs.existsSync(importFilePath)) {
         const suppliersJsonStr = fs.readFileSync(importFilePath)
+
         if (JSON.parse(suppliersJsonStr)) {
           const jsonData = JSON.parse(suppliersJsonStr)
           const suppliers = jsonData.suppliers
