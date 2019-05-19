@@ -6,15 +6,17 @@ const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 
-const settings = require('../config/settings')
+const root = process.cwd()
+const settings = require(`${root}/config/settings`)
+const logger = require(`${root}/logger/app`)
+const publicPath = path.resolve('public')
+
 const routes = require('./routes')
 const graphQLSchema = require('./graphql')
 
-const publicPath = path.join(__dirname, '/../public')
-
 const PORT = process.env.PORT ? process.env.PORT : settings.server.port
-
 const app = express()
+
 app.use(cors())
 app.use(cookieParser())
 app.use(session(settings.session))
@@ -33,10 +35,10 @@ app.use('/graphql', graphQLHttp(() => ({
 
 // SPA fallback
 app.get('/*', (req, res) => {
-  const indexHtmlPath = path.join(__dirname, '/../public/index.html')
+  const indexHtmlPath = path.resolve('public/index.html')
   res.sendFile(indexHtmlPath)
 })
 
 app.listen(PORT, () => {
-  console.log(`app started http://localhost:${PORT}`)
+  logger.info(`app started http://localhost:${PORT}`)
 })

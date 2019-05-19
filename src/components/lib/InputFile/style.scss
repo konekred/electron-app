@@ -1,0 +1,68 @@
+.input-file {
+  display: flex;
+  justify-content: center;
+
+  > input {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+  }
+
+  > input + label {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    overflow: hidden;
+
+    figure {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 20px;
+      margin: 0px;
+      padding: 0px;
+
+      svg {
+        fill: #ffffff;
+      }
+    }
+
+    span {
+      text-align: center;
+    }
+  }
+
+  /*  input-file-circle */
+
+  &.input-file-circle {
+    > input + label {
+      color: $primary;
+
+      figure {
+        background-color: $primary;
+        width: 40px;
+        height: 40px;
+        margin-bottom: 5px;
+        padding: 10px;
+        border-radius: 50%;
+      }
+    }
+
+    > input:focus + label,
+    > input + label:hover {
+      color: $dark;
+
+      figure {
+        background-color: $dark;
+      }
+    }
+  }
+}

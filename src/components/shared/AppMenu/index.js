@@ -17,6 +17,14 @@ const links = [
   {
     text: 'Bad Orders',
     url: '/bad-orders'
+  },
+  {
+    text: 'Vouchers',
+    url: '/vouchers'
+  },
+  {
+    text: 'EWT',
+    url: '/ewt'
   }
 ]
 

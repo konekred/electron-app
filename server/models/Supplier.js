@@ -17,9 +17,10 @@ class Supplier {
     })
   }
 
+
   static insert(data) {
     return new Promise((resolve, reject) => {
-      if (fieldsExists(['code', 'name', 'address', 'TIN', 'taxClass', 'principal', 'terms'], data)) {
+      if (fieldsExists(['name'], data)) {
         const sql = `
           INSERT INTO [Suppliers] (
             [code],
@@ -42,7 +43,7 @@ class Supplier {
           data.terms
         ]
 
-        db.exec(sql, params, { logging: true }).then(success => {
+        db.exec(sql, params).then(success => {
           resolve(success)
         }).catch(err => {
           reject(err)
@@ -53,6 +54,25 @@ class Supplier {
       }
     })
   }
+
+  static insertAndFind(data) {
+    return new Promise((resolve, reject) => {
+      Supplier.insert(data).then(success => {
+        if (success) {
+          Supplier.findByName(data.name).then(supplier => {
+            resolve(supplier)
+          }).catch(err => {
+            reject(err)
+          })
+        } else {
+          reject({ message: 'insert failed', data: data })
+        }
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  }
+
 
   static csvReader(filepath, validate = false) {
     return new Promise(async (resolve, reject) => {
@@ -95,6 +115,7 @@ class Supplier {
     })
   }
 
+
   static saveImport() {
     return new Promise(async (resolve, reject) => {
       const importFilePath = path.join(tmpPath, 'import-suppliers.json')
@@ -106,16 +127,28 @@ class Supplier {
           const suppliers = jsonData.suppliers
 
           let successCount = 0
+          const dataCount = suppliers.length
+          const errors = []
 
           for (let i = 0; i < suppliers.length; i++) {
             const supplier = suppliers[i]
-            await Supplier.insert(supplier).then(success => {
-              if (success) {
-                successCount += 1
-              }
-            }).catch(err => {
-              console.log(err)
-            })
+            if (supplier.ok) {
+              await Supplier.insert(supplier).then(success => {
+                if (success) {
+                  successCount += 1
+                }
+              }).catch(err => {
+                errors.push({
+                  data: supplier,
+                  error: err
+                })
+              })
+            } else {
+              errors.push({
+                data: supplier,
+                message: `${supplier.name} already exists`
+              })
+            }
           }
 
           fs.unlinkSync(importFilePath)
@@ -123,11 +156,12 @@ class Supplier {
           resolve({
             ok: true,
             successCount,
-            dataCount: suppliers.length
+            dataCount,
+            errors
           })
         }
       } else {
-        reject({ message: 'imports-supplier.json does not exists' })
+        reject({ message: 'imports-supplier.json file does not exists' })
       }
     })
   }

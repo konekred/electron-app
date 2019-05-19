@@ -56,8 +56,7 @@ const Suppliers = () => {
                         <th className="number">#</th>
                         <th className="code">Code</th>
                         <th className="name">Name</th>
-                        <th className="email">Email</th>
-                        <th className="representative">Representative</th>
+                        <th className="email">TIN</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -70,8 +69,7 @@ const Suppliers = () => {
                               {supplier.name}
                             </Link>
                           </td>
-                          <td>{supplier.email}</td>
-                          <td>{supplier.representative}</td>
+                          <td>{supplier.TIN}</td>
                         </tr>
                       ))}
                     </tbody>

@@ -46,3 +46,68 @@ table {
 .padded {
   padding: 15px;
 }
+
+.action-bar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+
+  .actions {
+    &.two {
+      width: 50%;
+    }
+
+    &.link-action {
+      display: flex;
+      justify-content: flex-end;
+
+      > a {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        > svg {
+          font-size: 32px;
+        }
+
+        > span {
+          font-size: 13px;
+        }
+      }
+    }
+  }
+}
+
+.import-button {
+  margin-bottom : 30px;
+}
+
+.import-table {
+  margin-bottom: 30px;
+  font-size: 10px;
+
+  tr {
+    th, td {
+      padding: 8px 4px;
+    }
+  }
+}
+
+.import-action {
+  display: flex;
+  justify-content: center;
+
+  .save-import {
+    background: $primary;
+    padding: 15px 60px;
+    border-radius: 3px;
+    border: none;
+    font-size: 14px;
+    color: $white;
+  }
+}
+
+.process-loading {
+  padding: 30px 15px;
+  text-align: center;
+}

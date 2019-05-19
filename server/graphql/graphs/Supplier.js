@@ -47,8 +47,7 @@ const SupplierGraph = {
                 [id],
                 [code],
                 [name],
-                [email],
-                [representative]
+                [TIN]
               FROM
                 [Suppliers]
               ${whereClause}

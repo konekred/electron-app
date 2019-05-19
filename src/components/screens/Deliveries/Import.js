@@ -29,7 +29,7 @@ const Import = () => {
     const file = uploadInput.current.files[0]
 
     if (file) {
-      fetch('/suppliers/import', { method: 'POST', body: toFormData({ file }) }).then(res => res.json()).then(json => {
+      fetch('/deliveries/import', { method: 'POST', body: toFormData({ file }) }).then(res => res.json()).then(json => {
         setProcessingStatus(false)
         setRows(json.rows)
       })
@@ -38,7 +38,7 @@ const Import = () => {
 
   const saveImportClick = () => {
     setProcessingSave(true)
-    fetch('/suppliers/save-import', { method: 'POST' }).then(res => res.json()).then(json => {
+    fetch('/deliveries/save-import', { method: 'POST' }).then(res => res.json()).then(json => {
       setProcessingStatus(false)
       setProcessingSave(false)
       setRows([])
@@ -50,11 +50,11 @@ const Import = () => {
     <Page name="supplier-import">
       <Container>
         <PageSection>
-          <Title text="Import Suppliers" />
+          <Title text="Import Deliveries" />
 
-          <div className="import-button">
+          <div className="suppliers-import-button">
             <InputFile
-              id="import-supplier"
+              id="import-delivery"
               text="Choose a file..."
               custom="circle"
               ref={uploadInput}
@@ -71,7 +71,7 @@ const Import = () => {
 
           {csvRows.length > 0 && (
             <Fragment>
-              <table className="import-table">
+              <table className="suppliers-import-table">
                 <thead>
                   <tr>
                     <th>Status</th>
@@ -104,13 +104,13 @@ const Import = () => {
                 </tbody>
               </table>
 
-              <div className="import-action">
+              <div className="suppliers-import-action">
                 <button
                   className="save-import"
                   onClick={saveImportClick}
                   disabled={processingSave}
                 >
-                  { processingSave ? 'Processing your import ...' : 'Save Import' }
+                  {processingSave ? 'Processing your import ...' : 'Save Import'}
                 </button>
               </div>
             </Fragment>

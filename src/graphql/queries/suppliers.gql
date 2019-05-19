@@ -5,8 +5,6 @@ query SuppliersQuery($limit: Int, $page: Int) {
       code
       name
       TIN
-      email
-      representative
     }
     pagination {
       limit
