@@ -4,6 +4,7 @@ import React, {
   useState
 } from 'react'
 import classNames from 'classnames'
+import moment from 'moment'
 import Container from '@lib/Container'
 import {
   Page,
@@ -38,21 +39,20 @@ const Import = () => {
 
   const saveImportClick = () => {
     setProcessingSave(true)
-    fetch('/deliveries/save-import', { method: 'POST' }).then(res => res.json()).then(json => {
+    fetch('/deliveries/save-import', { method: 'POST' }).then(res => res.json()).then(() => {
       setProcessingStatus(false)
       setProcessingSave(false)
       setRows([])
-      console.log(json)
     })
   }
 
   return (
-    <Page name="supplier-import">
+    <Page name="deliveries-import">
       <Container>
         <PageSection>
           <Title text="Import Deliveries" />
 
-          <div className="suppliers-import-button">
+          <div className="import-button">
             <InputFile
               id="import-delivery"
               text="Choose a file..."
@@ -71,40 +71,41 @@ const Import = () => {
 
           {csvRows.length > 0 && (
             <Fragment>
-              <table className="suppliers-import-table">
+              <table className="import-table">
                 <thead>
                   <tr>
-                    <th>Status</th>
-                    <th>Code</th>
-                    <th>Name</th>
-                    <th>Address</th>
-                    <th>TIN</th>
-                    <th>Tax Class</th>
-                    <th>Principal</th>
-                    <th>Terms</th>
+                    <th className="counter">#</th>
+                    <th className="status">Status</th>
+                    <th className="date">Date</th>
+                    <th className="invoice-number">Invoice Number</th>
+                    <th className="supplier">Supplier</th>
+                    <th className="amount">Amount</th>
                   </tr>
                 </thead>
                 <tbody>
                   {csvRows.map((row, index) => (
                     <tr key={`row-${index}`}>
+                      <td>{index + 1}</td>
                       <td>
-                        <span className={classNames('badge', { success: row.ok, error: !row.ok })}>
+                        <span className={classNames('badge', 'small', { success: row.ok, error: !row.ok })}>
                           {row.ok ? 'OK' : 'Duplicate'}
                         </span>
                       </td>
-                      <td>{row.code}</td>
-                      <td>{row.name}</td>
-                      <td>{row.address}</td>
-                      <td>{row.TIN}</td>
-                      <td>{row.taxClass}</td>
-                      <td>{row.principal}</td>
-                      <td>{row.terms}</td>
+                      <td className="date">{moment(row.date).format('MMM DD, YYYY')}</td>
+                      <td className="invoice-number">{row.invoiceNumber}</td>
+                      <td className="supplier">
+                        {row.supplier}
+                        {row.isNewSupplier && (
+                          <span className="badge success small">New</span>
+                        )}
+                      </td>
+                      <td className="amount">{row.amount}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
 
-              <div className="suppliers-import-action">
+              <div className="import-action">
                 <button
                   className="save-import"
                   onClick={saveImportClick}

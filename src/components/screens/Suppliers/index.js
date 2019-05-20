@@ -2,15 +2,16 @@ import React, { Fragment, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Query } from 'react-apollo'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import Container from '@lib/Container'
+
 import {
   Page,
   PageSection,
   Title
 } from '@lib/Page'
 
-import Paginator from '@lib/Paginator'
+import Container from '@lib/Container'
 import SearchBar from '@shared/SearchBar'
+import Paginator from '@lib/Paginator'
 import Loader from '@shared/Loader'
 import SuppliersQuery from '@graphql/queries/suppliers.gql'
 
@@ -19,6 +20,12 @@ import './style.scss'
 const Suppliers = () => {
   const limit = 50
   const [page, setPage] = useState(1)
+  const [search, setSearch] = useState('')
+
+  const searchChange = (e) => {
+    setPage(1)
+    setSearch(e.target.value)
+  }
 
   return (
     <Page>
@@ -28,7 +35,10 @@ const Suppliers = () => {
 
           <div className="action-bar">
             <div className="actions two search-action">
-              <SearchBar />
+              <SearchBar
+                value={search}
+                onChange={searchChange}
+              />
             </div>
 
             <div className="actions two link-action">
@@ -39,9 +49,9 @@ const Suppliers = () => {
             </div>
           </div>
 
-          <Query query={SuppliersQuery} variables={{ limit, page }} fetchPolicy="network-only">
-            {({ data, loading, error }) => {
-              if (loading || error) {
+          <Query fetchPolicy="network-only" query={SuppliersQuery} variables={{ limit, page, search }}>
+            {({ data }) => {
+              if (!data.suppliers) {
                 return <Loader />
               }
 
@@ -53,7 +63,7 @@ const Suppliers = () => {
                   <table className="suppliers-table">
                     <thead>
                       <tr>
-                        <th className="number">#</th>
+                        <th className="counter">#</th>
                         <th className="code">Code</th>
                         <th className="name">Name</th>
                         <th className="email">TIN</th>
@@ -69,7 +79,7 @@ const Suppliers = () => {
                               {supplier.name}
                             </Link>
                           </td>
-                          <td>{supplier.TIN}</td>
+                          <td>{supplier.tinNumber}</td>
                         </tr>
                       ))}
                     </tbody>

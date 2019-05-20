@@ -1,0 +1,26 @@
+query($limit: Int, $page: Int, $search: String) {
+  deliveries(limit: $limit, page: $page, search: $search) {
+    data {
+      id
+      invoiceNumber
+      amount
+      date
+      supplier {
+        id
+        name
+      }
+    }
+    pagination {
+      limit
+      count
+      pages
+      page
+    }
+    errors {
+      message
+      type
+      path
+      value
+    }
+  }
+}

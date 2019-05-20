@@ -17,7 +17,7 @@ const SupplierType = new GraphQLObjectType({
     code: {
       type: GraphQLString
     },
-    TIN: {
+    tinNumber: {
       type: GraphQLString
     },
     taxClass: {

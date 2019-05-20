@@ -84,6 +84,8 @@
     "log4js": "^4.2.0",
     "moment": "^2.24.0",
     "multer": "^1.4.1",
-    "node-adodb": "^5.0.2"
+    "mysql2": "^1.6.5",
+    "node-adodb": "^5.0.2",
+    "sequelize": "^5.8.6"
   }
 }

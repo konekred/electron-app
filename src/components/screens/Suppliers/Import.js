@@ -42,7 +42,7 @@ const Import = () => {
       setProcessingStatus(false)
       setProcessingSave(false)
       setRows([])
-      console.log(json)
+      console.log(json) // eslint-disable-line no-console
     })
   }
 
@@ -74,6 +74,7 @@ const Import = () => {
               <table className="import-table">
                 <thead>
                   <tr>
+                    <th className="counter">#</th>
                     <th>Status</th>
                     <th>Code</th>
                     <th>Name</th>
@@ -87,6 +88,7 @@ const Import = () => {
                 <tbody>
                   {csvRows.map((row, index) => (
                     <tr key={`row-${index}`}>
+                      <td>{index + 1}</td>
                       <td>
                         <span className={classNames('badge', { success: row.ok, error: !row.ok })}>
                           {row.ok ? 'OK' : 'Duplicate'}

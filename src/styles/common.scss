@@ -22,7 +22,7 @@ table {
 
 .badge {
   display: inline-block;
-  padding: .25em .4em;
+  padding: 4px 10px;
   font-size: 75%;
   font-weight: 700;
   line-height: 1;
@@ -35,6 +35,11 @@ table {
   &.success {
     background-color: $green;
     color: $white;
+  }
+
+  &.small {
+    padding: 4px 8px;
+    font-size: 8px;
   }
 
   &.error {

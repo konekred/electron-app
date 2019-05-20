@@ -72,9 +72,11 @@
 // }
 
 
-
-
-
-
 const logger = require('./logger/app')
-logger.info('hello')
+const db = require('./server/database')
+
+db.exec('INSERT INTO suppliers (name) VALUES (:name), (:name)', { name: 'Hello' }, 'INSERT').then(data => {
+  if (data) {
+    logger.debug(data)
+  }
+})
