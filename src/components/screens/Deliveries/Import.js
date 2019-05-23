@@ -5,6 +5,7 @@ import React, {
 } from 'react'
 import classNames from 'classnames'
 import moment from 'moment'
+import numeral from 'numeral'
 import Container from '@lib/Container'
 import {
   Page,
@@ -86,20 +87,30 @@ const Import = () => {
                   {csvRows.map((row, index) => (
                     <tr key={`row-${index}`}>
                       <td>{index + 1}</td>
-                      <td>
+                      <td className="status">
                         <span className={classNames('badge', 'small', { success: row.ok, error: !row.ok })}>
                           {row.ok ? 'OK' : 'Duplicate'}
                         </span>
                       </td>
-                      <td className="date">{moment(row.date).format('MMM DD, YYYY')}</td>
-                      <td className="invoice-number">{row.invoiceNumber}</td>
+
+                      <td className="date">
+                        {moment(row.date).format('MMM. DD YYYY')}
+                      </td>
+
+                      <td className="invoice-number">
+                        {numeral(row.purchaseOrderNumber).format('0000000000')}
+                      </td>
+
                       <td className="supplier">
-                        {row.supplier}
-                        {row.isNewSupplier && (
-                          <span className="badge success small">New</span>
+                        {row.supplier.name}
+                        {row.supplier.isNew && (
+                          <span className="badge small success">New</span>
                         )}
                       </td>
-                      <td className="amount">{row.amount}</td>
+
+                      <td className="amount">
+                        {numeral(row.amount).format('0,0.00')}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

@@ -1,10 +1,10 @@
 query($limit: Int, $page: Int, $search: String) {
   deliveries(limit: $limit, page: $page, search: $search) {
     data {
-      id
-      invoiceNumber
+      purchaseOrderNumber
       amount
       date
+      transactionCount
       supplier {
         id
         name

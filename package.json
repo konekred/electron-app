@@ -86,6 +86,7 @@
     "multer": "^1.4.1",
     "mysql2": "^1.6.5",
     "node-adodb": "^5.0.2",
+    "numeral": "^2.0.6",
     "sequelize": "^5.8.6"
   }
 }

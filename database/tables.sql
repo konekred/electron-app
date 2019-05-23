@@ -6,8 +6,9 @@ CREATE DATABASE IF NOT EXISTS paysight_db;
 DROP TABLE IF EXISTS `suppliers`;
 CREATE TABLE IF NOT EXISTS `suppliers` (
   `id` BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  `code` VARCHAR(100) NULL,
+  `code` BIGINT NOT NULL UNIQUE,
   `name` VARCHAR(255) NOT NULL,
+  `shortName` VARCHAR(50) NULL,
   `tinNumber` VARCHAR(25) NULL,
   `taxClass` VARCHAR(25) NULL,
   `principal` VARCHAR(50) NULL,
@@ -27,10 +28,13 @@ CREATE TABLE IF NOT EXISTS `suppliers` (
 DROP TABLE IF EXISTS `deliveries`;
 CREATE TABLE IF NOT EXISTS `deliveries` (
   `id` BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  `invoiceNumber` BIGINT NOT NULL,
+  `transactionNumber` BIGINT NOT NULL UNIQUE,
+  `purchaseOrderNumber` BIGINT NOT NULL,
+  `referenceNumber` BIGINT NOT NULL,
   `supplierId` BIGINT NOT NULL,
+  `quantity` INT NOT NULL,
   `amount` DECIMAL(10, 2) NOT NULL,
-  `date` DATE NOT NULL
+  `date` DATETIME NOT NULL
 );
 -- end: deliveries table
 

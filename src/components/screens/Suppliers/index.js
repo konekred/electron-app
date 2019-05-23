@@ -88,6 +88,7 @@ const Suppliers = () => {
                   <Paginator
                     pages={pagination.pages}
                     current={page}
+                    limit={10}
                     pageClick={setPage}
                   />
                 </Fragment>

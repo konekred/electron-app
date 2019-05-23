@@ -7,6 +7,16 @@ const fieldsExists = require(`${root}/lib/helpers/fieldsExists`)
 const tmpPath = path.resolve('tmp')
 
 class Supplier {
+  static findByCode(code) {
+    return new Promise((resolve, reject) => {
+      db.queryFirst('SELECT `id`, `code` FROM `suppliers` WHERE `code` = :code LIMIT 1', { code }).then(supplier => {
+        resolve(supplier)
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  }
+
   static findByName(name) {
     return new Promise((resolve, reject) => {
       db.queryFirst('SELECT `id`, `name` FROM `suppliers` WHERE `name` = :name LIMIT 1', { name }).then(supplier => {
