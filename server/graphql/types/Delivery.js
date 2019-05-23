@@ -1,6 +1,7 @@
 const {
   GraphQLID,
   GraphQLString,
+  GraphQLInt,
   GraphQLFloat,
   GraphQLObjectType
 } = require('graphql')
@@ -10,11 +11,8 @@ const { SupplierType } = require('./Supplier')
 const DeliveryType = new GraphQLObjectType({
   name: 'DeliveryType',
   fields: () => ({
-    id: {
+    purchaseOrderNumber: {
       type: GraphQLID
-    },
-    invoiceNumber: {
-      type: GraphQLString
     },
     supplierId: {
       type: GraphQLID
@@ -24,6 +22,9 @@ const DeliveryType = new GraphQLObjectType({
     },
     date: {
       type: GraphQLString
+    },
+    transactionCount: {
+      type: GraphQLInt
     },
     supplier: {
       type: SupplierType

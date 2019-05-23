@@ -2,16 +2,18 @@ const root = '../..'
 const fs = require('fs')
 const path = require('path')
 const moment = require('moment')
+const numeral = require('numeral')
 const db = require('../database')
 const CsvReader = require(`${root}/lib/CsvReader`)
 const fieldsExists = require(`${root}/lib/helpers/fieldsExists`)
 const tmpPath = path.resolve('tmp')
 const Supplier = require('./Supplier')
+const logger = require(`${root}/logger/app`)
 
 class Delivery {
-  static findByInvoiceNumber(invoiceNumber) {
+  static findByTransactionNumber(transactionNumber) {
     return new Promise((resolve, reject) => {
-      db.queryFirst('SELECT `id`, `invoiceNumber` FROM `deliveries` WHERE `invoiceNumber` = :invoiceNumber LIMIT 1', { invoiceNumber }).then(delivery => {
+      db.queryFirst('SELECT `id`, `transactionNumber` FROM `deliveries` WHERE `transactionNumber` = :transactionNumber LIMIT 1', { transactionNumber }).then(delivery => {
         resolve(delivery)
       }).catch(err => {
         reject(err)
@@ -23,12 +25,16 @@ class Delivery {
     return new Promise((resolve, reject) => {
       const sql = `
         INSERT INTO deliveries (
-          invoiceNumber,
+          transactionNumber,
+          purchaseOrderNumber,
+          referenceNumber,
           supplierId,
           \`amount\`,
           \`date\`
         ) VALUES (
-          :invoiceNumber,
+          :transactionNumber,
+          :purchaseOrderNumber,
+          :referenceNumber,
           :supplierId,
           :amount,
           :date
@@ -41,6 +47,7 @@ class Delivery {
           count: data[1]
         })
       }).catch(err => {
+        logger.debug(err)
         reject(err)
       })
     })
@@ -53,51 +60,61 @@ class Delivery {
 
       csvReader.read().then(async (rows) => {
         const errors = []
+        const formattedRows = []
 
         if (validate) {
           let isValidCsvFormat = false
 
           if (rows.length > 0) {
-            isValidCsvFormat = fieldsExists(['date', 'invoiceNumber', 'supplier', 'amount'], rows[0])
+            isValidCsvFormat = fieldsExists(['trans', 'pono', 'refno', 'qty', 'amount', 'date', 'time', 'supplier', 'suppcode'], rows[0])
           }
 
           if (isValidCsvFormat) {
             for (let i = 0; i < rows.length; i++) {
               const row = rows[i]
+              const formattedRow = {
+                ok: true,
+                transactionNumber: numeral(row.trans).value(),
+                purchaseOrderNumber: numeral(row.pono).value(),
+                referenceNumber: numeral(row.refno).value(),
+                quantity: numeral(row.qty).value(),
+                amount: numeral(row.amount).value(),
+                date: moment(`${row.date} ${row.time}`, 'D-MMM-YY HH:mm:ss').format('YYYY-MM-DD HH:mm:ss'),
+                supplier: {
+                  code: parseInt(row.suppcode),
+                  name: row.supplier.trim()
+                }
+              }
 
-              row.ok = true
-              row.date = moment(row.date, 'D-MMM-YY').format('YYYY-MM-DD')
-              row.amount = parseFloat(row.amount.replace(/,/g, ''))
-
-              if (row.supplier && row.invoiceNumber) {
-                row.supplier = row.supplier.trim()
-
-                await Delivery.findByInvoiceNumber(row.invoiceNumber).then(delivery => {
+              if (formattedRow.supplier && formattedRow.transactionNumber) {
+                await Delivery.findByTransactionNumber(formattedRow.transactionNumber).then(delivery => {
                   if (delivery) {
-                    row.ok = false
+                    formattedRow.ok = false
                   }
                 }).catch(err => {
                   errors.push(err)
                 })
 
-                const supplier = await Supplier.findByName(row.supplier).catch(err => {
+                const supplier = await Supplier.findByName(formattedRow.supplier.code).catch(err => {
                   errors.push(err)
                 })
 
                 if (supplier) {
-                  row.supplierId = supplier.id
-                  row.isNewSupplier = false
+                  formattedRow.supplier.isNew = false
+                  formattedRow.supplierId = supplier.id
                 } else {
-                  row.isNewSupplier = true
+                  formattedRow.supplier.isNew = true
                 }
               }
+
+              formattedRows.push(formattedRow)
             }
           }
         }
 
-        fs.writeFileSync(path.join(tmpPath, 'import-delivery.json'), JSON.stringify({ deliveries: rows }, null, 2))
+        fs.writeFileSync(path.join(tmpPath, 'import-delivery.json'), JSON.stringify({ deliveries: formattedRows }, null, 2))
         resolve({
-          rows,
+          rows: formattedRows,
           errors: errors.length == 0 ? null : errors
         })
 
@@ -125,12 +142,23 @@ class Delivery {
           for (let i = 0; i < deliveries.length; i++) {
             const delivery = deliveries[i]
 
-            if (delivery.isNewSupplier) {
-              await db.exec('INSERT INTO suppliers (`name`) VALUES (:name)', { name: delivery.supplier }, 'INSERT').then(data => {
-                delivery.supplierId = data[0]
-              }).catch(err => {
+            if (delivery.supplier.isNew) {
+              const supplier = await Supplier.findByCode(delivery.supplier.code).catch(err => {
                 errors.push(err)
               })
+
+              if (supplier) {
+                delivery.supplierId = supplier.id
+              } else {
+                await db.exec('INSERT INTO suppliers (`code`, `name`) VALUES (:code, :name)', {
+                  code: delivery.supplier.code,
+                  name: delivery.supplier.name
+                }, 'INSERT').then(data => {
+                  delivery.supplierId = data[0]
+                }).catch(err => {
+                  errors.push(err)
+                })
+              }
             }
 
             if (delivery.ok) {
@@ -147,7 +175,7 @@ class Delivery {
             } else {
               errors.push({
                 data: delivery,
-                message: `invoice number ${delivery.invoiceNumber} already exists`
+                message: `transaction number ${delivery.transactionNumber} already exists`
               })
             }
           }

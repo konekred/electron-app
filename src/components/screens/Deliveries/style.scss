@@ -20,10 +20,15 @@
       th, td {
         font-size: 14px;
 
+        &.status,
         &.date,
         &.invoice-number,
         &.supplier {
           text-align: center;
+        }
+
+        &.status {
+          width: 55px;
         }
 
         &.supplier {
@@ -36,9 +41,14 @@
             top: 5px;
           }
         }
+
         &.amount {
           width: 200px;
           text-align: right;
+        }
+
+        &.date {
+          width: 170px;
         }
       }
     }

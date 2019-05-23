@@ -5,8 +5,24 @@ import '@styles/app.scss'
 
 // icons
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faUpload, faFileUpload } from '@fortawesome/free-solid-svg-icons'
-library.add(faUpload, faFileUpload)
+
+import {
+  faUpload,
+  faFileUpload,
+  faAngleRight,
+  faAngleLeft,
+  faAngleDoubleRight,
+  faAngleDoubleLeft
+} from '@fortawesome/free-solid-svg-icons'
+
+library.add(
+  faUpload,
+  faFileUpload,
+  faAngleRight,
+  faAngleLeft,
+  faAngleDoubleRight,
+  faAngleDoubleLeft
+)
 
 const RootElement = document.getElementById('app')
 ReactDOM.render(<App />, RootElement)

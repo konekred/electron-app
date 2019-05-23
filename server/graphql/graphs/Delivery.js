@@ -33,7 +33,7 @@ const DeliveryGraph = {
             const page = args.page || 1
             const search = args.search || null
 
-            const whereClause = search ? 'WHERE `deliveries`.`invoiceNumber` LIKE :search OR `suppliers`.`name` LIKE :search' : ''
+            const whereClause = search ? 'WHERE `suppliers`.`name` LIKE :search OR deliveries.purchaseOrderNumber LIKE :search' : ''
             const limitClause = limit ? 'LIMIT :limit' : ''
             const offsetClause = limit ? 'OFFSET :offset' : ''
 
@@ -43,38 +43,56 @@ const DeliveryGraph = {
 
             const deliveriesData = await db.query(`
               SELECT
-                deliveries.id,
-                deliveries.invoiceNumber,
+                deliveries.purchaseOrderNumber,
                 deliveries.supplierId,
-                deliveries.amount,
-                deliveries.\`date\`,
-                suppliers.\`name\`
+                suppliers.code,
+                suppliers.name,
+                SUM(deliveries.amount) AS amount,
+                DATE_FORMAT(deliveries.date, "%Y-%m-%d %H:%i:%s") AS \`date\`,
+                COUNT(*) AS transactionCount
               FROM
                 deliveries
                 INNER JOIN suppliers ON suppliers.id = deliveries.supplierId
               ${whereClause}
+              GROUP BY
+                purchaseOrderNumber
               ORDER BY
-                deliveries.\`date\` DESC,
-                suppliers.\`name\` ASC,
-                deliveries.\`invoiceNumber\`
+                deliveries.date DESC
               ${limitClause}
               ${offsetClause}
             `, params)
 
-            const data = deliveriesData.map(({ id, invoiceNumber, amount, date, supplierId, name }) => {
+            // formatting for graphql
+            const data = deliveriesData.map(({ purchaseOrderNumber, supplierId, code, name, amount, date, transactionCount }) => {
               return {
-                id,
-                invoiceNumber,
+                purchaseOrderNumber,
                 amount,
                 date,
                 supplier: {
                   id: supplierId,
+                  code,
                   name
-                }
+                },
+                transactionCount
               }
             })
 
-            const count = await db.queryFirst(`SELECT COUNT(*) AS \`count\` FROM deliveries INNER JOIN suppliers ON suppliers.id = deliveries.supplierId ${whereClause}`, params)
+            const count = await db.queryFirst(`
+              SELECT
+                COUNT(*) AS count
+              FROM
+                (
+                  SELECT
+                    purchaseOrderNumber
+                  FROM
+                    deliveries
+                    INNER JOIN suppliers ON suppliers.id = deliveries.supplierId
+                    ${whereClause}
+                  GROUP BY
+                    purchaseOrderNumber
+                ) AS purchaseOrders
+            `, params)
+
             const pages = limit ? Math.ceil(count.count / limit) : 1
             const pagination = {
               count: count.count,

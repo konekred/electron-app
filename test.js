@@ -75,7 +75,7 @@
 const logger = require('./logger/app')
 const db = require('./server/database')
 
-db.exec('INSERT INTO suppliers (name) VALUES (:name), (:name)', { name: 'Hello' }, 'INSERT').then(data => {
+db.query('SELECT * FROM deliveries').then(data => {
   if (data) {
     logger.debug(data)
   }

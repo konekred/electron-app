@@ -1,4 +1,6 @@
 import React, { Fragment, useState } from 'react'
+import moment from 'moment'
+import numeral from 'numeral'
 import { Link } from 'react-router-dom'
 import { Query } from 'react-apollo'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -72,12 +74,12 @@ const Deliveries = () => {
                     </thead>
                     <tbody>
                       {deliveries.data.map((delivery, index) => (
-                        <tr key={`delivery-${delivery.id}`}>
+                        <tr key={`delivery-${delivery.purchaseOrderNumber}`}>
                           <th>{((page - 1) * limit) + (index + 1)}</th>
-                          <td className="date">{delivery.date}</td>
-                          <td className="invoice-number">{delivery.invoiceNumber}</td>
+                          <td className="date">{moment(delivery.date).format('MMM. DD YYYY')}</td>
+                          <td className="invoice-number">{delivery.purchaseOrderNumber}</td>
                           <td className="supplier">{delivery.supplier.name}</td>
-                          <td className="amount">{delivery.amount}</td>
+                          <td className="amount">{numeral(delivery.amount).format('0,0.00')}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -86,6 +88,7 @@ const Deliveries = () => {
                   <Paginator
                     pages={pagination.pages}
                     current={page}
+                    limit={10}
                     pageClick={setPage}
                   />
                 </Fragment>
