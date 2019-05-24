@@ -20,6 +20,22 @@ table {
   }
 }
 
+.button {
+  padding: 8px 12px;
+  border-radius: 3px;
+
+  &.blue {
+    background-color: $blue;
+    color: $white;
+  }
+
+  &.small {
+    padding: 5px;
+    font-size: 11px;
+  }
+}
+
+
 .badge {
   display: inline-block;
   padding: 4px 10px;

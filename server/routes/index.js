@@ -13,6 +13,7 @@ const logger = require(`${root}/logger/app`)
 
 const Supplier = require(`${root}/server/models/Supplier`)
 const Delivery = require(`${root}/server/models/Delivery`)
+const BadOrder = require(`${root}/server/models/BadOrder`)
 
 router.get('/check', (req, res) => {
   res.json({
@@ -102,6 +103,20 @@ router.post('/deliveries/save-import', (req, res) => {
     res.json({ ok: false })
   })
 })
+
+
+router.post('/bad-orders/import', upload.single('file'), (req, res) => {
+  const { file } = req
+  BadOrder.csvReader(file.path, true).then(({ rows, errors }) => {
+    res.json({ ok: true, rows, errors })
+  }).catch(err => {
+    logger.error(err)
+    res.json({ ok: false, rows: [] })
+  })
+})
+
+
+
 
 
 router.get('/settings', async (req, res) => {

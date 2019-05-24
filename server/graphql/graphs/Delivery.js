@@ -47,6 +47,7 @@ const DeliveryGraph = {
                 deliveries.supplierId,
                 suppliers.code,
                 suppliers.name,
+                SUM(deliveries.quantity) AS quantity,
                 SUM(deliveries.amount) AS amount,
                 DATE_FORMAT(deliveries.date, "%Y-%m-%d %H:%i:%s") AS \`date\`,
                 COUNT(*) AS transactionCount
@@ -63,9 +64,19 @@ const DeliveryGraph = {
             `, params)
 
             // formatting for graphql
-            const data = deliveriesData.map(({ purchaseOrderNumber, supplierId, code, name, amount, date, transactionCount }) => {
+            const data = deliveriesData.map(({
+              purchaseOrderNumber,
+              supplierId,
+              code,
+              name,
+              quantity,
+              amount,
+              date,
+              transactionCount
+            }) => {
               return {
                 purchaseOrderNumber,
+                quantity,
                 amount,
                 date,
                 supplier: {

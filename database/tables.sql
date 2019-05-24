@@ -44,8 +44,13 @@ CREATE TABLE IF NOT EXISTS `deliveries` (
 DROP TABLE IF EXISTS `bad_orders`;
 CREATE TABLE IF NOT EXISTS `bad_orders` (
   `id` BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `transactionNumber` BIGINT NOT NULL UNIQUE,
+  `purchaseOrderNumber` BIGINT NOT NULL,
+  `referenceNumber` BIGINT NOT NULL,
   `supplierId` BIGINT NOT NULL,
+  `quantity` INT NOT NULL,
   `amount` DECIMAL(10, 2) NOT NULL,
-  `date` DATE NOT NULL
+  `date` DATETIME NOT NULL,
+  `remark` VARCHAR(50) NULL
 );
--- end: deliveries table
+-- end: bad_orders table

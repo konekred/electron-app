@@ -2,6 +2,7 @@ query($limit: Int, $page: Int, $search: String) {
   deliveries(limit: $limit, page: $page, search: $search) {
     data {
       purchaseOrderNumber
+      quantity
       amount
       date
       transactionCount

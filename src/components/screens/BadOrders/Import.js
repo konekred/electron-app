@@ -3,6 +3,7 @@ import React, {
   useRef,
   useState
 } from 'react'
+
 import classNames from 'classnames'
 import moment from 'moment'
 import numeral from 'numeral'
@@ -33,7 +34,7 @@ const Import = () => {
     const file = uploadInput.current.files[0]
 
     if (file) {
-      fetch('/deliveries/import', { method: 'POST', body: toFormData({ file }) }).then(res => res.json()).then(json => {
+      fetch('/bad-orders/import', { method: 'POST', body: toFormData({ file }) }).then(res => res.json()).then(json => {
         setProcessingStatus(false)
         setRows(json.rows)
       })
@@ -42,7 +43,7 @@ const Import = () => {
 
   const saveImportClick = () => {
     setProcessingSave(true)
-    fetch('/deliveries/save-import', { method: 'POST' }).then(res => res.json()).then(() => {
+    fetch('/bad-orders/save-import', { method: 'POST' }).then(res => res.json()).then(() => {
       setProcessingStatus(false)
       setProcessingSave(false)
       setRows([])
@@ -50,10 +51,10 @@ const Import = () => {
   }
 
   return (
-    <Page name="deliveries-import">
+    <Page name="bad-orders-import">
       <Container>
         <PageSection>
-          <Title text="Import Deliveries" />
+          <Title text="Import Bad Orders" />
 
           <div className="import-button">
             <InputFile
@@ -91,8 +92,8 @@ const Import = () => {
                     <tr key={`row-${index}`}>
                       <td>{index + 1}</td>
                       <td className="status">
-                        <span className={classNames('badge', 'small', { success: row.ok, error: !row.ok })}>
-                          {row.ok ? 'OK' : 'Duplicate'}
+                        <span title={row.errors.map(error => error.message).join(', ')} className={classNames('badge', 'small', { success: row.ok, error: !row.ok })}>
+                          {row.ok ? 'OK' : 'Invalid'}
                         </span>
                       </td>
 
@@ -101,7 +102,7 @@ const Import = () => {
                       </td>
 
                       <td className="invoice-number">
-                        {numeral(row.purchaseOrderNumber).format('0000000000')}
+                        {row.purchaseOrderNumber ? numeral(row.purchaseOrderNumber).format('0000000000') : '' }
                       </td>
 
                       <td className="supplier">

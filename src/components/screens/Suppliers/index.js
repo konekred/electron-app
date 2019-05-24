@@ -18,7 +18,7 @@ import SuppliersQuery from '@graphql/queries/suppliers.gql'
 import './style.scss'
 
 const Suppliers = () => {
-  const limit = 50
+  const limit = 20
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
 

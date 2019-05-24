@@ -17,6 +17,9 @@ const DeliveryType = new GraphQLObjectType({
     supplierId: {
       type: GraphQLID
     },
+    quantity: {
+      type: GraphQLInt
+    },
     amount: {
       type: GraphQLFloat
     },

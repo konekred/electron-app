@@ -1,0 +1,28 @@
+.bad-orders-import {
+  .import-table {
+    tr {
+      th, td {
+        font-size: 13px;
+
+        &.status,
+        &.date,
+        &.invoice-number,
+        &.supplier,
+        &.quantity {
+          text-align: center;
+        }
+
+        &.status {
+          .badge {
+            cursor: pointer;
+          }
+        }
+
+        &.amount {
+          text-align: right;
+        }
+
+      }
+    }
+  }
+}

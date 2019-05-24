@@ -3,7 +3,9 @@
     th, td {
       &.date,
       &.invoice-number,
-      &.supplier {
+      &.supplier,
+      &.quantity,
+      &.action {
         text-align: center;
       }
 
@@ -18,7 +20,7 @@
   .import-table {
     tr {
       th, td {
-        font-size: 14px;
+        font-size: 13px;
 
         &.status,
         &.date,

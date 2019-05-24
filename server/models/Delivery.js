@@ -8,7 +8,7 @@ const CsvReader = require(`${root}/lib/CsvReader`)
 const fieldsExists = require(`${root}/lib/helpers/fieldsExists`)
 const tmpPath = path.resolve('tmp')
 const Supplier = require('./Supplier')
-const logger = require(`${root}/logger/app`)
+// const logger = require(`${root}/logger/app`)
 
 class Delivery {
   static findByTransactionNumber(transactionNumber) {
@@ -29,6 +29,7 @@ class Delivery {
           purchaseOrderNumber,
           referenceNumber,
           supplierId,
+          quantity,
           \`amount\`,
           \`date\`
         ) VALUES (
@@ -36,6 +37,7 @@ class Delivery {
           :purchaseOrderNumber,
           :referenceNumber,
           :supplierId,
+          :quantity,
           :amount,
           :date
         )
@@ -47,7 +49,6 @@ class Delivery {
           count: data[1]
         })
       }).catch(err => {
-        logger.debug(err)
         reject(err)
       })
     })
@@ -95,7 +96,7 @@ class Delivery {
                   errors.push(err)
                 })
 
-                const supplier = await Supplier.findByName(formattedRow.supplier.code).catch(err => {
+                const supplier = await Supplier.findByCode(formattedRow.supplier.code).catch(err => {
                   errors.push(err)
                 })
 

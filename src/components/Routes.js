@@ -16,6 +16,8 @@ import DeliveriesImport from '@screens/Deliveries/Import'
 import DeliveriesView from '@screens/Deliveries/View'
 
 import BadOrders from '@screens/BadOrders'
+import BadOrdersImport from '@screens/BadOrders/Import'
+
 import Vouchers from '@screens/Vouchers'
 import EWTScreen from '@screens/EWT'
 import { NotFound } from '@screens/ErrorPages'
@@ -38,9 +40,11 @@ const Routes = ({ children }: Props) => {
 
         <Route path="/deliveries" exact component={Deliveries} />
         <Route path="/deliveries/import" exact component={DeliveriesImport} />
-        <Route path="/deliveries/:id" component={DeliveriesView} />
+        <Route path="/deliveries/:purchaseOrderNumber" component={DeliveriesView} />
 
-        <Route path="/bad-orders" component={BadOrders} />
+        <Route path="/bad-orders" exact component={BadOrders} />
+        <Route path="/bad-orders/import" exact component={BadOrdersImport} />
+
         <Route path="/vouchers" component={Vouchers} />
         <Route path="/ewt" component={EWTScreen} />
 
