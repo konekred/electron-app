@@ -54,3 +54,18 @@ CREATE TABLE IF NOT EXISTS `bad_orders` (
   `remark` VARCHAR(50) NULL
 );
 -- end: bad_orders table
+
+
+
+-- start: supplier_employees table
+DROP TABLE IF EXISTS `supplier_employees`;
+CREATE TABLE IF NOT EXISTS `supplier_employees` (
+  `id` BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `supplierId` BIGINT NOT NULL,
+  `fullName` VARCHAR(100) NOT NULL,
+  `contactNumber` VARCHAR(15) NULL,
+  `email` VARCHAR(100) NULL,
+  `designation` VARCHAR(100) NULL,
+  `isActive` TINYINT(1) NOT NULL DEFAULT 1
+);
+-- end: supplier_employees table

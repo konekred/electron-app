@@ -22,7 +22,36 @@ class BadOrder {
   }
 
   static insert(data) {
-    return null
+    return new Promise((resolve, reject) => {
+      const sql = `
+        INSERT INTO bad_orders (
+          transactionNumber,
+          purchaseOrderNumber,
+          referenceNumber,
+          supplierId,
+          quantity,
+          \`amount\`,
+          \`date\`
+        ) VALUES (
+          :transactionNumber,
+          :purchaseOrderNumber,
+          :referenceNumber,
+          :supplierId,
+          :quantity,
+          :amount,
+          :date
+        )
+      `
+
+      db.exec(sql, data, 'INSERT').then(data => {
+        resolve({
+          id: data[0],
+          count: data[1]
+        })
+      }).catch(err => {
+        reject(err)
+      })
+    })
   }
 
 
@@ -124,9 +153,9 @@ class BadOrder {
 
 
   static saveImport() {
-    return new Promise((resolve, reject) => {
+    // return new Promise((resolve, reject) => {
 
-    })
+    // })
   }
 }
 
