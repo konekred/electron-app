@@ -14,13 +14,15 @@ import {
 import Container from '@lib/Container'
 import SearchBar from '@shared/SearchBar'
 import Paginator from '@lib/Paginator'
-import Loader from '@shared/Loader'
 import DeliveriesQuery from '@graphql/queries/deliveries.gql'
+
+import Loader from '@lib/Loader'
+import ErrorBlock from '@lib/ErrorBlock'
 
 import './style.scss'
 
 const Deliveries = () => {
-  const limit = 20
+  const limit = 100
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
 
@@ -52,8 +54,12 @@ const Deliveries = () => {
           </div>
 
           <Query fetchPolicy="network-only" query={DeliveriesQuery} variables={{ limit, page, search }}>
-            {({ data }) => {
-              if (!data.deliveries) {
+            {({ data, loading, error }) => {
+              if (error) {
+                return <ErrorBlock error={error} />
+              }
+
+              if (loading) {
                 return <Loader />
               }
 
@@ -75,14 +81,15 @@ const Deliveries = () => {
                     </thead>
                     <tbody>
                       {deliveries.data.map((delivery, index) => (
-                        <tr key={`delivery-${delivery.purchaseOrderNumber}`}>
+                        <tr key={`delivery-${delivery.purchaseOrderNumber}-${delivery.supplier.id}`}>
                           <th>
                             {((page - 1) * limit) + (index + 1)}
                           </th>
 
                           <td className="invoice-number">
                             <Link to={`/deliveries/${delivery.purchaseOrderNumber}`}>
-                              {delivery.purchaseOrderNumber}
+                              {numeral(delivery.purchaseOrderNumber).format('0000000000')}
+
                             </Link>
                           </td>
 

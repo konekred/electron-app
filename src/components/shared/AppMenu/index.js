@@ -19,12 +19,12 @@ const links = [
     url: '/bad-orders'
   },
   {
-    text: 'Vouchers',
-    url: '/vouchers'
-  },
-  {
     text: 'EWT',
     url: '/ewt'
+  },
+  {
+    text: 'Vouchers',
+    url: '/vouchers'
   }
 ]
 

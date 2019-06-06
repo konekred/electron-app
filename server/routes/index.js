@@ -116,7 +116,15 @@ router.post('/bad-orders/import', upload.single('file'), (req, res) => {
 })
 
 
-
+router.post('/bad-orders/save-import', (req, res) => {
+  BadOrder.saveImport().then(({ ok, successCount, errors }) => {
+    fsextra.emptyDirSync(tmpPath)
+    res.json({ ok, successCount, errors })
+  }).catch(err => {
+    logger.error(err)
+    res.json({ ok: false })
+  })
+})
 
 
 router.get('/settings', async (req, res) => {

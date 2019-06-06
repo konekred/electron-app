@@ -12,13 +12,14 @@ import {
 import Container from '@lib/Container'
 import SearchBar from '@shared/SearchBar'
 import Paginator from '@lib/Paginator'
-import Loader from '@shared/Loader'
 import SuppliersQuery from '@graphql/queries/suppliers.gql'
+
+import Loader from '@lib/Loader'
 
 import './style.scss'
 
 const Suppliers = () => {
-  const limit = 20
+  const limit = 100
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
 

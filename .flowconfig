@@ -6,11 +6,11 @@
 .*/lib/*
 .*/logger/*
 .*/installers/*
+.*/spec/*
 .*/src/assets/*
 .*/src/helpers/*
 .*/src/app.js
 .*/main.js
-.*/test.js
 
 [include]
 

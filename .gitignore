@@ -4,3 +4,4 @@ release-builds
 
 tmp
 *.log
+package-lock.json

@@ -1,3 +1,21 @@
+.bad-orders-table {
+  tr {
+    th, td {
+      &.date,
+      &.invoice-number,
+      &.supplier,
+      &.quantity,
+      &.action {
+        text-align: center;
+      }
+
+      &.amount {
+        text-align: right;
+      }
+    }
+  }
+}
+
 .bad-orders-import {
   .import-table {
     tr {
@@ -6,7 +24,6 @@
 
         &.status,
         &.date,
-        &.invoice-number,
         &.supplier,
         &.quantity {
           text-align: center;

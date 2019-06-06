@@ -80,7 +80,7 @@ class Delivery {
                 referenceNumber: numeral(row.refno).value(),
                 quantity: numeral(row.qty).value(),
                 amount: numeral(row.amount).value(),
-                date: moment(`${row.date} ${row.time}`, 'D-MMM-YY HH:mm:ss').format('YYYY-MM-DD HH:mm:ss'),
+                date: moment(`${row.date} ${row.time}`, 'D-MMM-YY').format('YYYY-MM-DD'),
                 supplier: {
                   code: parseInt(row.suppcode),
                   name: row.supplier.trim()
@@ -191,7 +191,7 @@ class Delivery {
           })
         }
       } else {
-        reject({ message: 'imports-delivery.json file does not exists' })
+        reject({ message: 'import-delivery.json file does not exists' })
       }
     })
   }

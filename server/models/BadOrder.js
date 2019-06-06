@@ -26,7 +26,6 @@ class BadOrder {
       const sql = `
         INSERT INTO bad_orders (
           transactionNumber,
-          purchaseOrderNumber,
           referenceNumber,
           supplierId,
           quantity,
@@ -34,7 +33,6 @@ class BadOrder {
           \`date\`
         ) VALUES (
           :transactionNumber,
-          :purchaseOrderNumber,
           :referenceNumber,
           :supplierId,
           :quantity,
@@ -101,28 +99,12 @@ class BadOrder {
                   errors.push(err)
                 })
 
-
                 if (supplier) {
-                  // get purchaseOrderNumber
-                  const delivery = await db.queryFirst('SELECT purchaseOrderNumber FROM deliveries WHERE supplierId = :supplierId AND DATE_FORMAT(`date`, \'%Y-%m-%d\') = :date LIMIT 1', {
-                    supplierId: supplier.id,
-                    date: formattedRow.date
-                  }).catch(err => {
-                    errors.push(err)
-                  })
-
-                  if (delivery) {
-                    formattedRow.ok = true
-                    formattedRow.purchaseOrderNumber = delivery.purchaseOrderNumber
-                    formattedRow.supplierId = supplier.id
-                  } else {
-                    formattedRow.errors.push({
-                      message: 'delivery does not exists'
-                    })
-                  }
-
+                  formattedRow.ok = true
+                  formattedRow.supplierId = supplier.id
                   formattedRow.supplier.exists = true
                 } else {
+                  formattedRow.supplier.exists = false
                   formattedRow.errors.push({
                     message: 'supplier does not exists'
                   })
@@ -135,7 +117,7 @@ class BadOrder {
         }
 
 
-        fs.writeFileSync(path.join(tmpPath, 'import-bad-order.json'), JSON.stringify({
+        fs.writeFileSync(path.join(tmpPath, 'import-bad-orders.json'), JSON.stringify({
           badOrders: formattedRows,
           errors: errors.length == 0 ? null : errors
         }, null, 2))
@@ -153,9 +135,54 @@ class BadOrder {
 
 
   static saveImport() {
-    // return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
+      const importFilePath = path.join(tmpPath, 'import-bad-orders.json')
 
-    // })
+      if (fs.existsSync(importFilePath)) {
+        const jsonStr = fs.readFileSync(importFilePath)
+        if (JSON.parse(jsonStr)) {
+          const jsonData = JSON.parse(jsonStr)
+          const badOrders = jsonData.badOrders
+
+          let successCount = 0
+          const dataCount = badOrders.length
+          const errors = []
+
+          for (let i = 0; i < badOrders.length; i++) {
+            const badOrder = badOrders[i]
+            if (badOrder.ok) {
+              await BadOrder.insert(badOrder).then(success => {
+                if (success) {
+                  successCount += 1
+                }
+              }).catch(err => {
+                errors.push({
+                  data: badOrder,
+                  error: err
+                })
+              })
+            } else {
+              errors.push({
+                data: badOrder,
+                error: `supplier does not exists ${badOrder.supplier.code} - ${badOrder.supplier.name}`
+              })
+            }
+          }
+
+          fs.unlinkSync(importFilePath)
+
+          resolve({
+            ok: true,
+            successCount,
+            dataCount,
+            errors
+          })
+
+        }
+      } else {
+        reject({ message: 'import-bad-orders.json does not exists' })
+      }
+    })
   }
 }
 

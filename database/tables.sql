@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `deliveries` (
   `purchaseOrderNumber` BIGINT NOT NULL,
   `referenceNumber` BIGINT NOT NULL,
   `supplierId` BIGINT NOT NULL,
-  `quantity` INT NOT NULL,
+  `quantity` DECIMAL(10, 2) NOT NULL,
   `amount` DECIMAL(10, 2) NOT NULL,
   `date` DATETIME NOT NULL
 );
@@ -45,10 +45,10 @@ DROP TABLE IF EXISTS `bad_orders`;
 CREATE TABLE IF NOT EXISTS `bad_orders` (
   `id` BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `transactionNumber` BIGINT NOT NULL UNIQUE,
-  `purchaseOrderNumber` BIGINT NOT NULL,
-  `referenceNumber` BIGINT NOT NULL,
+  `purchaseOrderNumber` BIGINT NULL,
+  `referenceNumber` BIGINT NULL,
   `supplierId` BIGINT NOT NULL,
-  `quantity` INT NOT NULL,
+  `quantity` DECIMAL(10, 2) NOT NULL,
   `amount` DECIMAL(10, 2) NOT NULL,
   `date` DATETIME NOT NULL,
   `remark` VARCHAR(50) NULL

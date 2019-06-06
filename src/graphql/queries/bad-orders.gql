@@ -1,0 +1,28 @@
+query($limit: Int, $page: Int, $search: String) {
+  badOrders(limit: $limit, page: $page, search: $search) {
+    data {
+      id
+      transactionNumber
+      referenceNumber
+      quantity
+      amount
+      date
+      supplier {
+        id
+        name
+      }
+    }
+    pagination {
+      limit
+      count
+      pages
+      page
+    }
+    errors {
+      message
+      type
+      path
+      value
+    }
+  }
+}

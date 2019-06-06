@@ -81,7 +81,6 @@ const Import = () => {
                     <th className="counter">#</th>
                     <th className="status">Status</th>
                     <th className="date">Date</th>
-                    <th className="invoice-number">Invoice Number</th>
                     <th className="supplier">Supplier</th>
                     <th className="quantity">Quantity</th>
                     <th className="amount">Amount</th>
@@ -99,10 +98,6 @@ const Import = () => {
 
                       <td className="date">
                         {moment(row.date).format('MMM. DD YYYY')}
-                      </td>
-
-                      <td className="invoice-number">
-                        {row.purchaseOrderNumber ? numeral(row.purchaseOrderNumber).format('0000000000') : '' }
                       </td>
 
                       <td className="supplier">

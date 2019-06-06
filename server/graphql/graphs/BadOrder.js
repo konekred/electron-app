@@ -3,14 +3,14 @@ const {
   GraphQLString
 } = require('graphql')
 
-const { DeliveryType } = require('../types/Delivery')
+const { BadOrderType } = require('../types/BadOrder')
 const PaginatedPayload = require('../types/PaginatedPayload')
 const db = require('../../database')
 
-const DeliveryGraph = {
+const BadOrderGraph = {
   query: {
-    deliveries: {
-      type: PaginatedPayload('DeliveriesPayload', DeliveryType),
+    badOrders: {
+      type: PaginatedPayload('BadOrdersPayload', BadOrderType),
       args: {
         limit: {
           name: 'limit',
@@ -33,7 +33,7 @@ const DeliveryGraph = {
             const page = args.page || 1
             const search = args.search || null
 
-            const whereClause = search ? 'WHERE `suppliers`.`name` LIKE :search OR deliveries.purchaseOrderNumber LIKE :search' : ''
+            const whereClause = search ? 'WHERE `suppliers`.`code` LIKE :search  OR `suppliers`.`name` LIKE :search OR bad_orders.transactionNumber LIKE :search' : ''
             const limitClause = limit ? 'LIMIT :limit' : ''
             const offsetClause = limit ? 'OFFSET :offset' : ''
 
@@ -41,52 +41,51 @@ const DeliveryGraph = {
             params.limit = limit
             params.offset = limit ? (page - 1) * limit : null
 
-            const deliveriesData = await db.query(`
+            const badOrdersData = await db.query(`
               SELECT
-                deliveries.purchaseOrderNumber,
-                deliveries.supplierId,
+                bad_orders.id,
+                bad_orders.transactionNumber,
+                bad_orders.referenceNumber,
+                bad_orders.quantity,
+                bad_orders.amount,
+                DATE_FORMAT(bad_orders.date, "%Y-%m-%d") AS \`date\`,
+                bad_orders.supplierId,
                 suppliers.code,
-                suppliers.name,
-                SUM(deliveries.quantity) AS quantity,
-                SUM(deliveries.amount) AS amount,
-                DATE_FORMAT(deliveries.date, "%Y-%m-%d") AS \`date\`,
-                COUNT(*) AS transactionCount
+                suppliers.name
               FROM
-                deliveries
-                INNER JOIN suppliers ON suppliers.id = deliveries.supplierId
+                bad_orders
+                INNER JOIN suppliers ON suppliers.id = bad_orders.supplierId
               ${whereClause}
-              GROUP BY
-                deliveries.purchaseOrderNumber,
-                deliveries.supplierId,
-                deliveries.date
               ORDER BY
-                deliveries.date DESC
+                bad_orders.date DESC
               ${limitClause}
               ${offsetClause}
             `, params)
 
             // formatting for graphql
-            const data = deliveriesData.map(({
-              purchaseOrderNumber,
-              supplierId,
-              code,
-              name,
+            const data = badOrdersData.map(({
+              id,
+              transactionNumber,
+              referenceNumber,
               quantity,
               amount,
               date,
-              transactionCount
+              supplierId,
+              code,
+              name
             }) => {
               return {
-                purchaseOrderNumber,
+                id,
+                transactionNumber,
+                referenceNumber,
                 quantity,
                 amount,
                 date,
                 supplier: {
                   id: supplierId,
-                  code,
-                  name
-                },
-                transactionCount
+                  code: code,
+                  name: name
+                }
               }
             })
 
@@ -96,14 +95,12 @@ const DeliveryGraph = {
               FROM
                 (
                   SELECT
-                    purchaseOrderNumber
+                    bad_orders.id
                   FROM
-                    deliveries
-                    INNER JOIN suppliers ON suppliers.id = deliveries.supplierId
-                    ${whereClause}
-                  GROUP BY
-                    purchaseOrderNumber
-                ) AS purchaseOrders
+                    bad_orders
+                    INNER JOIN suppliers ON suppliers.id = bad_orders.supplierId
+                  ${whereClause}
+                ) AS badOrders
             `, params)
 
             const pages = limit ? Math.ceil(count.count / limit) : 1
@@ -128,4 +125,4 @@ const DeliveryGraph = {
   }
 }
 
-module.exports = DeliveryGraph
+module.exports = BadOrderGraph
